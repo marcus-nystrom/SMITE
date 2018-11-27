@@ -12,6 +12,7 @@ import glob
 import os
 from scipy import misc
 from ctypes import *
+#import pickle
 
 global buf # Used to keep data in ring buffer
 
@@ -1638,6 +1639,8 @@ class Connect(object):
     def get_latest_sample(self):
         ''' Gets most recent gaze sample
         '''
+        #pickle.dump(self.get_sample(), open( "sample.p", "wb" ) )
+        
         return self.get_sample()
         
         
@@ -1678,7 +1681,8 @@ class Connect(object):
         # Initialize the ring buffer
         global buf
         buf = helpers.RingBuffer(maxlen=sample_buffer_length)
-        print(buf, type(buf))
+        print(buf)
+        #print(buf, type(buf))
         self.__buffer_active = True
         
         # Set callback (starts reading samples)

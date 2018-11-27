@@ -12,18 +12,32 @@
  
 import math
 import numpy as np
-from psychopy import core, event, misc, visual, monitors, data, gui
+import os, sys
+
+from psychopy import core, event, misc, visual, monitors, data, gui, monitors
 import pandas as pd
-import helpers_tobii as helpers
-import TITTA 
 
+# Insert the parent directory (where SMITE is) to path
+curdir = os.path.dirname(os.path.abspath(__file__))
+os.chdir(curdir)
+sys.path.insert(0,os.path.dirname(curdir)) 
+import SMITE
+import helpers
 
-# Get exp settings
-settings = TITTA.get_defaults('Spectrum')
-    
-#from constants_tobii import *# Import constants related to ET and geometry
-         
-#mouse = event.Mouse()
+# Get settings
+eye_tracker_name = 'REDm'
+
+MY_MONITOR = 'default'
+SCREEN_WIDTH = 53
+SCREEN_RES = (1920, 1080)
+VIEWING_DIST = 65
+dummy_mode = True
+
+mon = monitors.Monitor(MY_MONITOR) # Defi ned in defaults file
+mon.setWidth(SCREEN_WIDTH)    # Width of screen (cm)
+mon.setDistance(VIEWING_DIST) # Distance eye / monitor (cm) 
+mon.setSizePix(SCREEN_RES)
+
 
 # Show dialogue box
 info = {'Enter your name':'your name', 'Eye tracking':[False, True]}
@@ -39,9 +53,11 @@ info['dateStr']= data.getDateStr()
 player_name = '_'.join([info['Enter your name'], info['dateStr']])
 
 # Window set-up (the color will be used for calibration)
-win = visual.Window(monitor = settings.mon, screen = 1, 
+win = visual.Window(monitor = mon, screen = 1, 
                     units = 'pix', fullscr = True,
                     allowGUI = False)
+                    
+print(win.size)
 
 core.wait(1) 
 mouse = event.Mouse(win=win)
@@ -61,33 +77,17 @@ else:
 
 ### Setup a PsychoPy window for calibration
 if eye_tracking:
-   
 
-    import tobii_research as tr
-    
-    ets = tr.find_all_eyetrackers()
-    for et in ets:
-        print(et.address)
-    
-   
-    # Change any of the default dettings?
-    settings.TRACKER_ADDRESS = et.address
-    settings.FILENAME = 'my_test.tsv'
-    
-    # Connect to eye tracker
-    tracker = TITTA.Connect(settings) 
+    settings = SMITE.get_defaults(eye_tracker_name)
+    tracker = SMITE.Connect(settings)
     tracker.init()
     
     tracker.calibrate(win)
         
     # Start eye tracker
-    tracker.start_recording(gaze_data=True, 
-                                sync_data=False,
-                                image_data=True,
-                                stream_error_data=False,
-                                write_data=False)
+    tracker.start_recording()
         
-    tracker.start_sample_buffer(sample_buffer_length=10)
+    tracker.start_buffer(sample_buffer_length=10)
     core.wait(1)
 
 # Define some colors
@@ -96,8 +96,8 @@ white = (1, 1, 1)
 blue = (0, 0, 1)
  
 
-screen_size = settings.SCREEN_RES
-game_rect = visual.Rect(win, settings.SCREEN_RES[0], settings.SCREEN_RES[1], units = 'pix')
+screen_size = SCREEN_RES
+game_rect = visual.Rect(win, SCREEN_RES[0], SCREEN_RES[1], units = 'pix')
 mouse.setPos((0, -screen_size[1]/2 + 100))
 
 # information about block position
@@ -238,12 +238,12 @@ class Player():
         if eye_tracking:
             
             # Peek in the eye tracker buffer
-            data = tracker.get_samples_from_buffer()
+            data = tracker.peek_buffer_data()
 #            print(data)
             
             # Convert from Tobii coordinate system to ssv 
-            lx = [d['left_gaze_point_on_display_area'][0] for d in data]
-            rx = [d['right_gaze_point_on_display_area'][0] for d in data]
+            lx = [d.leftEye.gazeX for d in data]
+            rx = [d.rightEye.gazeX for d in data]
 #            print(lx, rx)
 
             # Use the average position (i.e., lowpass filtered)
@@ -376,7 +376,7 @@ try:
 
     # Stop eye tracker and clean up 
     if eye_tracking:
-        tracker.stop_sample_buffer()
+        tracker.stop_buffer()
         tracker.stop_recording()
         tracker.de_init()
 

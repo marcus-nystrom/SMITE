@@ -16,7 +16,7 @@ MY_MONITOR = 'default'
 SCREEN_WIDTH = 53
 SCREEN_RES = (1920, 1080)
 VIEWING_DIST = 65
-dummy_mode = False
+dummy_mode = True
 
 mon = monitors.Monitor(MY_MONITOR) # Defi ned in defaults file
 mon.setWidth(SCREEN_WIDTH)    # Width of screen (cm)
@@ -31,7 +31,7 @@ settings = SMITE.get_defaults(eye_tracker_name)
 win = visual.Window(monitor = mon, screen = settings.screen, size=(1280, 1024),
                     units = 'deg', fullscr = True,
                     allowGUI = False) 
-text = visual.TextStim(win, text='Left click mouse')                    
+text = visual.TextStim(win, text='')                    
 print(win.size)
 et_sample = visual.Circle(win, radius  = 20, 
                                  fillColor = 'blue',
@@ -48,12 +48,11 @@ tracker = SMITE.Connect(settings)
 
 #tracker.raw.set_RED_geometry()
 
-#if dummy_mode:
-#    tracker.set_dummy_mode()
+if dummy_mode:
+    tracker.set_dummy_mode()
     
 tracker.init()
 print(tracker.system_info)
-print(tracker.geom.__dict__)
 
 tracker.calibrate(win)
 
@@ -64,7 +63,7 @@ core.wait(0.5)
 
 print('connection status: {}'.format(tracker.is_connected()))
 
-
+text.text = 'Press Escape to continue'
 # Show gaze contingent marker (left eye)
 while True:
     
@@ -80,6 +79,8 @@ while True:
         pos = helpers.smi2psychopy(pos, mon, units='pix')
         et_sample.pos = pos
         et_sample.draw()
+        
+    text.draw()
     win.flip()
     
     if 'escape' in k:
@@ -100,6 +101,7 @@ core.wait(1)
 tracker.stop_recording()
 
 # Test setting mouse click in BeGaze
+text.text = 'Left click mouse'
 core.wait(1)
 tracker.start_recording()
 text.draw()

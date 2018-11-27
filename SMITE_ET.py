@@ -119,9 +119,9 @@ class Connect(object):
                 self.calibration_history.append(devs + ['used'])
                 
                 # Write the calibration results to the idf file
-                self.tracker.start_recording()
+                self.start_recording()
                 self.send_message("Calibration results in degrees (LX, LY, RX, RY): {}".format([d for d in devs]))
-                self.tracker.stop_recording()
+                self.stop_recording()
                 
             else:
                 self.calibration_history.append(devs + ['not used'])  
@@ -191,9 +191,10 @@ class Connect(object):
     #%% 
     def set_dummy_mode(self):
         # Set current class to Dummy class
-        import SMITE_Dummy
+        import SMITE_Dummy, SMITE_Dummy_raw
         self.__class__ = SMITE_Dummy.Connect
         self.__class__.__init__(self)    
+        self.rawSMI = SMITE_Dummy_raw.Connect()
 
     #%% 
     def _create_calibration_buttons(self, win):

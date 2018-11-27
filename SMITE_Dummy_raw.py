@@ -3,7 +3,7 @@
 
 # Load required packages 
 from psychopy import core, event, misc
-from iViewXAPI_new import*
+from iViewXAPI import*
 from iViewXAPIReturnCodes import* 
 import subprocess
 import numpy as np
@@ -13,8 +13,6 @@ import pickle
 import helpers
 import time
 
-
-global buf
 
 # Numbers used by iView X for identify eye trackers
 ET_server_dict = {'iViewX':0, 'iViewXOEM':1, 'iViewNG':2}
@@ -46,6 +44,7 @@ class Connect(Thread):
         self.clock = core.Clock()
         self.connect_timeout = 30 # in seconds 
         self.mouse = event.Mouse()
+        self.buf = []
         
 
         
@@ -1239,11 +1238,17 @@ class Connect(Thread):
         ''' Callback function for sample data
         '''
         # Append data to buffer
-        global buf
-        buf.append(sample)
+        self.buf.append(sample)
+        
     #%%
-    def get_buffer_data(self):
+    def consume_buffer_data(self):
+        ''' Consume all samples '''
         return self.buf.get_all()
+        
+    #%%
+    def peek_buffer_data(self):
+        ''' Consume all samples '''
+        return self.buf.peek()
         
     #%% 
     def start_buffer(self, sample_buffer_length=3):  

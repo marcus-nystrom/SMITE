@@ -12,7 +12,7 @@ class Connect(object):
     """
     def __init__(self):
 
-        self.raw = SMITE_Dummy_raw.Connect()
+        self.rawSMI = SMITE_Dummy_raw.Connect()
         
         # Mouse object
         self.mouse = event.Mouse()
@@ -24,10 +24,13 @@ class Connect(object):
         ''' Connect to eye tracker
         and apply settings
         '''
-        self.raw.init()           
+        self.rawSMI.init()           
+        self.geom = None
+        self.system_info = None
+        self.calibration_history = None
     #%%    
     def is_connected(self):
-        self.raw.is_connected()
+        self.rawSMI.is_connected()
     
     #%% Init calibration
     def calibrate(self, win):
@@ -41,7 +44,7 @@ class Connect(object):
         self.instruction_text = instruction_text
         
         self.win = win
-        self.raw.win = win
+        self.rawSMI.win = win
         
         self.instruction_text.text = 'Calibration Dummy mode'
         self.instruction_text.draw()
@@ -50,74 +53,69 @@ class Connect(object):
                 
     #%%  
     def start_recording(self):
-        self.raw.start_recording()
+        self.rawSMI.start_recording()
         
     #%% 
     def start_buffer(self, sample_buffer_length=3):
-        self.raw.start_buffer(sample_buffer_length=sample_buffer_length)
+        self.rawSMI.start_buffer(sample_buffer_length=sample_buffer_length)
         
     #%% 
     def send_message(self, msg):
-        self.raw.send_image_message(msg)
+        self.rawSMI.send_image_message(msg)
         
     #%%
     def get_latest_sample(self):
-        sample  = self.raw.get_latest_sample()
+        sample  = self.rawSMI.get_latest_sample()
         return sample
         
     #%%
-    def get_buffer_data(self):
-        data = self.raw.get_buffer_data()
+    def consume_buffer_data(self):
+        data = self.rawSMI.consume_buffer_data()
         return data
+    
+    #%%
+    def peek_buffer_data(self):
+        data = self.rawSMI.peek_buffer_data()
+        return data    
     
     #%% 
     def stop_buffer(self):
-        self.raw.start_buffer()    
+        self.rawSMI.start_buffer()    
         
     #%%  
     def stop_recording(self):
-        self.raw.stop_recording()
+        self.rawSMI.stop_recording()
     #%% 
     def save_data(self, filename, description = "", 
                    user = None, overwrite=0):
-        self.raw.save_data(filename, description = "", 
+        self.rawSMI.save_data(filename, description = "", 
                    user = None, overwrite=0)        
     #%%
     def de_init(self):
-        self.raw.de_init()
+        self.rawSMI.de_init()
         
     #%%
     def set_begaze_trial_image(self, imname):
-        self.raw.set_begaze_trial_image(imname)
+        self.rawSMI.set_begaze_trial_image(imname)
     #%%        
     def set_begaze_key_press(self, msg):
-        self.raw.set_begaze_key_press(msg)
+        self.rawSMI.set_begaze_key_press(msg)
     #%%
     def set_begaze_mouse_click(self, which, x, y):
-        self.raw.set_begaze_mouse_click(which, x, y)      
+        self.rawSMI.set_begaze_mouse_click(which, x, y)      
         
     #%%
     def start_eye_image_recording(self, image_name, path):
-        self.raw.start_eye_image_recording(image_name, path)
+        self.rawSMI.start_eye_image_recording(image_name, path)
     #%%
     def stop_eye_image_recording(self, image_name, path):
-        self.raw.start_eye_image_recording(image_name, path)        
+        self.rawSMI.start_eye_image_recording(image_name, path)        
         
     #%% 
     def set_dummy_mode(self):
         print('Does nothing')
 
-    #%%     
-    def calibration_history(self):
-        print('Does calibration_history')
-        return None
-    
-    #%% 
-    def geom(self):
-        '''
-        Get the geometry of the current setup
-        '''
-        print('Does Get the geometry of the current setup')
+
 
    
  
