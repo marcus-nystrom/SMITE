@@ -3,7 +3,7 @@
 
 # Load required packages 
 from psychopy import core, event, visual
-from iViewXAPI_new import*
+from iViewXAPI import*
 from iViewXAPIReturnCodes import* 
 import numpy as np
 import datetime
@@ -117,6 +117,12 @@ class Connect(object):
         for i, devs in enumerate(deviations):
             if i == selected_calibration-1:
                 self.calibration_history.append(devs + ['used'])
+                
+                # Write the calibration results to the idf file
+                self.tracker.start_recording()
+                self.send_message("Calibration results in degrees (LX, LY, RX, RY): {}".format([d for d in devs]))
+                self.tracker.stop_recording()
+                
             else:
                 self.calibration_history.append(devs + ['not used'])  
               
@@ -969,35 +975,6 @@ class Connect(object):
         self.et_sample_r.pos = (pos[:, 0][0], pos[:, 1][0])
         self.et_sample_r.draw()            
 
-#%%         
-#class ValidationDataContainer(object):
-#    """ A class for storing validation results"""
-#    def __init__(self, accuracy_data = [0, 0, 0, 0, 0]):
-#        '''
-#        Args:
-#            accuracy_data - list with calibration results
-#        '''
-#        self.accuracy_data = accuracy_data
-#
-#    @property
-#    def deviationLX(self):
-#        return self.accuracy_data[0]
-#        
-#    @property    
-#    def deviationLY(self):
-#        return self.accuracy_data[1]
-#        
-#    @property
-#    def deviationRX(self):
-#        return self.accuracy_data[2]
-#        
-#    @property
-#    def deviationRY(self):
-#        return self.accuracy_data[3]
-#        
-#    @property        
-#    def calibration_used(self):
-#        return self.accuracy_data[4]
 #%%   
 class AnimatedCalibrationDisplay(object):
     """ A class for drawing animated targets"""

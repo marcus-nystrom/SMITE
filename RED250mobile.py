@@ -19,7 +19,7 @@ ip_send = '127.0.0.1'
 ip_listen = '127.0.0.1'
 
 track_mode = 'SMART_BINOCULAR'      # Tracking mode
-sampling_freq = 60                  # Sampling rate of eye tracker
+sampling_freq = 250                  # Sampling rate of eye tracker
 
 geom_profile = 'Default Profile'    # Geometric profile 
 

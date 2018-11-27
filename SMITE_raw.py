@@ -3,22 +3,17 @@
 
 # Load required packages 
 from psychopy import core, event, misc
-from iViewXAPI_new import*
+from iViewXAPI import*
 from iViewXAPIReturnCodes import* 
 import subprocess
 import numpy as np
 import helpers
-import copy
 import glob
 import os
 from scipy import misc
 from ctypes import *
-import pickle
-#import binascii
-# ToDo: list function in alphabetic order (Same as in manual,
-# simple functions first.)
 
-global buf
+global buf # Used to keep data in ring buffer
 
 # Numbers used by iView X for identify eye trackers
 ET_server_dict = {'iViewX':0, 'iViewXOEM':1, 'iViewNG':2}
@@ -27,8 +22,7 @@ ET_device_dict = {'NONE':0, 'RED':1, 'REDm':2, 'RED250Mobile':2, 'HiSpeed':3,
 
 tracking_mode_dict = {'SMART_BINOCULAR':0, 'MONOCULAR_LEFT':1,
                       'MONOCULAR_RIGHT':2, 'BINOCULAR':3, 
-                      'SMART_MONOCULAR':4}
-      
+                      'SMART_MONOCULAR':4}   
 
 #%%    
         
@@ -77,6 +71,21 @@ class Connect(object):
         elif eye_tracker_name == 'REDn':
             import REDn as constants
             self.et_server_name = 'iViewNG'
+            self.set_tracking_mode_allowed = True
+            self.geom_profile = True
+        elif eye_tracker_name == 'REDn_Professional':
+            self.et_server_name = 'iViewNG'
+            self.set_tracking_mode_allowed = True
+            self.geom_profile = True            
+            import REDn_Professional as constants
+        elif eye_tracker_name == 'REDn_Scientific':
+            self.et_server_name = 'iViewNG'
+            import REDn_Scientific as constants  
+            self.set_tracking_mode_allowed = True
+            self.geom_profile = True            
+        elif eye_tracker_name == 'RED250mobile':
+            self.et_server_name = 'iViewNG'
+            import RED250mobile as constants  
             self.set_tracking_mode_allowed = True
             self.geom_profile = True
         else:

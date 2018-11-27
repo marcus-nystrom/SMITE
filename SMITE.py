@@ -18,8 +18,12 @@ def get_defaults(eye_tracker_name):
         import HiSpeed as settings
     elif eye_tracker_name == 'RED':
         import RED as settings
-    elif eye_tracker_name == 'REDn':
-        import REDn as settings
+    elif eye_tracker_name == 'REDn_Professional':
+        import REDn_Professional as settings
+    elif eye_tracker_name == 'REDn_Scientific':
+        import REDn_Scientific as settings        
+    elif eye_tracker_name == 'RED250mobile':
+        import RED250mobile as settings             
     else:
         print('Eye tracker not defined')
         core.quit()   

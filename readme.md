@@ -29,6 +29,10 @@ SMITE.get_defaults('trackerName');` Supported tracker Names are `HiSpeed`,
 2. edit settings if wanted (see below)
 3. initialize SMITE using this settings struct: `EThndl = SMITE(settings)`
 
-ToDos:
-1. Implement file transfer in two computer setups
-2. 
+ToDos (current discrepancies between the paper and the toolbox):
+1. File transfer in two computer setups not implemented
+2. do_flip_eye not implemented (fixes a bug in older versions of iViewX, e.g., v. 2.7.13, where left and right eyes are flipped)
+3. get_options returns all settings. set_options does nothing. This means that it's currently up to the user not to use functionally that is not available during recording (for instance changing the sampling frequency of the eye tracker).
+4. Images returned from the API looks strange when using PsychoPy with Python 3.6. Affects validation screen and eye images.
+5. 'pip install smite' not yet available
+
