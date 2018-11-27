@@ -46,7 +46,7 @@ class Connect(object):
         '''
         return self.constants           
     #%%% 
-    def set_options(self.settings):
+    def set_options(self):
         ''' Change current/active settings
         '''        
         pass
@@ -202,8 +202,8 @@ class Connect(object):
                               [-0.45 * ratio, 0.45], [0.45 * ratio, 0.45]]
 
         # Text object to draw text (on buttons)
-        text_size = 0.04
-        instruction_text = visual.TextStim(win,text='',wrapWidth = 1,height = text_size, units='norm')  
+        #text_size = 0.04
+        instruction_text = visual.TextStim(win,text='',wrapWidth = 1,height = graphics.TEXT_SIZE, units='norm')  
         self.instruction_text = instruction_text
         
         # Setup stimuli for drawing calibration / validation targets
@@ -217,7 +217,7 @@ class Connect(object):
                                         units='norm', fillColor=graphics.COLOR_CAL_BUTTON,
                                         pos=graphics.POS_CAL_BUTTON)                
         self.calibrate_button_text = visual.TextStim(win, text=graphics.CAL_BUTTON_TEXT, 
-                                                     height=text_size, units='norm',
+                                                     height=graphics.TEXT_SIZE, units='norm',
                                                      pos=graphics.POS_CAL_BUTTON)
                                                      
         self.recalibrate_button = visual.Rect(win, width= graphics.WIDTH_RECAL_BUTTON, 
@@ -225,7 +225,7 @@ class Connect(object):
                                         units='norm', fillColor=graphics.COLOR_RECAL_BUTTON,
                                         pos=graphics.POS_RECAL_BUTTON) 
         self.recalibrate_button_text = visual.TextStim(win, text=graphics.RECAL_BUTTON_TEXT, 
-                                                     height=text_size, units='norm',
+                                                     height=graphics.TEXT_SIZE, units='norm',
                                                      pos=graphics.POS_RECAL_BUTTON)                                                     
                                         
         self.setup_button = visual.Rect(win, width= graphics.WIDTH_SETUP_BUTTON, 
@@ -233,7 +233,7 @@ class Connect(object):
                                         units='norm', fillColor=graphics.COLOR_SETUP_BUTTON,
                                         pos=graphics.POS_SETUP_BUTTON)
         self.setup_button_text = visual.TextStim(win, text=graphics.SETUP_BUTTON_TEXT, 
-                                                 height=text_size, units='norm',
+                                                 height=graphics.TEXT_SIZE, units='norm',
                                                  pos=graphics.POS_SETUP_BUTTON)             
 
         self.accept_button = visual.Rect(win, width= graphics.WIDTH_ACCEPT_BUTTON, 
@@ -241,7 +241,7 @@ class Connect(object):
                                         units='norm', fillColor=graphics.COLOR_ACCEPT_BUTTON,
                                         pos=graphics.POS_ACCEPT_BUTTON)
         self.accept_button_text = visual.TextStim(win, text=graphics.ACCEPT_BUTTON_TEXT, 
-                                                  height=text_size, units='norm',
+                                                  height=graphics.TEXT_SIZE, units='norm',
                                                   pos=graphics.POS_ACCEPT_BUTTON)             
                                                                         
         self.back_button = visual.Rect(win, width= graphics.WIDTH_BACK_BUTTON, 
@@ -249,7 +249,7 @@ class Connect(object):
                                         units='norm', fillColor=graphics.COLOR_BACK_BUTTON,
                                         pos=graphics.POS_BACK_BUTTON)    
         self.back_button_text = visual.TextStim(win, text=graphics.BACK_BUTTON_TEXT, 
-                                                height=text_size, units='norm',
+                                                height=graphics.TEXT_SIZE, units='norm',
                                                 pos=graphics.POS_BACK_BUTTON)             
                                                                       
         self.gaze_button = visual.Rect(win, width= graphics.WIDTH_GAZE_BUTTON, 
@@ -257,7 +257,7 @@ class Connect(object):
                                         units='norm', fillColor=graphics.COLOR_GAZE_BUTTON,
                                         pos=graphics.POS_GAZE_BUTTON)   
         self.gaze_button_text = visual.TextStim(win, text=graphics.GAZE_BUTTON_TEXT, 
-                                                height=text_size, units='norm',
+                                                height=graphics.TEXT_SIZE, units='norm',
                                                 pos=graphics.POS_GAZE_BUTTON)             
                                         
         # Dots for the setup screen
@@ -280,7 +280,8 @@ class Connect(object):
                                          fillColor = 'red', units='pix')                                         
       
         # Show images (eye image, validation resutls)
-        self.eye_image_stim = visual.GratingStim(win, units='pix', size=graphics.EYE_IMAGE_SIZE, color=(0, 0, 0))
+        self.eye_image_stim = visual.GratingStim(win, units='pix', size=graphics.EYE_IMAGE_SIZE, 
+                                                 pos=(0, 0), color=(0, 0, 0))
         
         # Accuracy image 
         self.accuracy_image = visual.ImageStim(win, image=None,units='norm', size=(1.5,1.5),
@@ -579,6 +580,11 @@ class Connect(object):
             eye_image, res = self.rawSMI.get_eye_image()
             if res == 1:
                 self.eye_image_stim.tex = eye_image
+                #core.wait(1)
+                #print(eye_image.shape, eye_image.min(), eye_image.max())
+                #print(self.eye_image_stim.tex.shape, self.eye_image_stim.tex.min(), self.eye_image_stim.tex.max())
+
+            #self.eye_image_stim.draw()
             self.eye_image_stim.draw()
               
             # Show tracking monitor (not available for HiSpeed)
@@ -643,9 +649,9 @@ class Connect(object):
         accuracy_values = []
 
         y_pos = y_pos_res
-        print(self.deviations)
+        #print(self.deviations)
         for i in range(nCalibrations):
-            print(self.deviations[i])
+            #print(self.deviations[i])
             select_accuracy_rect.append(visual.Rect(self.win, width= 0.15, 
                                                 height= 0.05, 
                                                 units='norm',
@@ -662,9 +668,10 @@ class Connect(object):
             # by Cal x (the calibration number)
             accuracy_values_j = []
             for j, x in enumerate(x_pos):       
+                #print(deviations)
                 if j > 0:
                     accuracy_values_j.append(visual.TextStim(self.win,
-                                                        text='{0:.2f}'.format(self.deviations[i][j - 1]),
+                                                        text='{0:.2f}'.format(float(deviations[i][j - 1])),
                                                         wrapWidth = 1,
                                                         height = graphics.TEXT_SIZE, 
                                                         units='norm',

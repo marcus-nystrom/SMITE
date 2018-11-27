@@ -389,7 +389,7 @@ class Connect(object):
         Supported systems: all 
 
         '''   
-        res = iViewXAPI.iV_EnableGazeDataFilter()
+        res = iViewXAPI.iV_DisableGazeDataFilter()
         HandleError(res)
         
       

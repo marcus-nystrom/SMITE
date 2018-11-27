@@ -3,19 +3,20 @@
 from psychopy import visual, monitors
 from psychopy import core, event, gui
 import numpy as np
-import helpers
+import os, sys
+
 
 # Insert the parent directory (where SMITE is) to path
 curdir = os.path.dirname(os.path.abspath(__file__))
 os.chdir(curdir)
 sys.path.insert(0,os.path.dirname(curdir)) 
 import SMITE
-
+import helpers
 
 MY_MONITOR = 'default'
-SCREEN_WIDTH = 34
+SCREEN_WIDTH = 53
 SCREEN_RES = (1920, 1080)
-VIEWING_DIST = 55
+VIEWING_DIST = 65
 dummy_mode = False
 
 mon = monitors.Monitor(MY_MONITOR) # Defi ned in defaults file
@@ -23,7 +24,7 @@ mon.setWidth(SCREEN_WIDTH)    # Width of screen (cm)
 mon.setDistance(VIEWING_DIST) # Distance eye / monitor (cm) 
 mon.setSizePix(SCREEN_RES)
 
-eye_tracker_name = 'REDn'
+eye_tracker_name = 'REDm'
 settings = SMITE.get_defaults(eye_tracker_name) 
 
 # Window set-up (the color will be used for calibration)
@@ -136,6 +137,7 @@ print(tracker.geom)
 
 # Print the calibration history
 print(tracker.calibration_history)
+print(tracker.system_info)
 
 # Stop recording, save data, and cleanup
 tracker.stop_recording()

@@ -14,6 +14,9 @@ yellow = tuple(np.array([150, 150, 0]) / 255.0 * 2 - 1)
 
 ET_SAMPLE_RADIUS = 10 # Pixles
 
+# Size of text
+TEXT_SIZE = 0.04
+
 # SIze of calibration dots
 TARGET_SIZE=20  # in pixles
 TARGET_SIZE_INNER=TARGET_SIZE / float(5)  # inner diameter of dot
@@ -70,5 +73,6 @@ GAZE_BUTTON_TEXT = 'show gaze (g)'
 SETUP_DOT_OUTER_DIAMETER = 0.05 # Height unit
 SETUP_DOT_INNER_DIAMETER = 0.02        
 
-EYE_IMAGE_SIZE = (640, 512)
+#EYE_IMAGE_SIZE = (640, 512)
+EYE_IMAGE_SIZE = (512, 512)
 
