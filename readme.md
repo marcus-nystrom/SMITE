@@ -16,7 +16,7 @@ SMITE is licensed under the Creative Commons Attribution 4.0 (CC BY 4.0) license
 functionality.
 
 To run the toolbox, it is required to install the SMI iViewX SDK version
-4.4.26. PsychoPy 1.90.1 stand alone is recommended. 
+4.4.26. PsychoPy 1.90.1 standalone is recommended. 
 
 Tested on Windows PsychoPy 1.90.1. Also tested with PsychoPy3, Beta 10 (but see issue below).
 

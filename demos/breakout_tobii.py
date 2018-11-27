@@ -1,7 +1,7 @@
 """
  Sample Breakout Game
  
- Adapted from
+ Adapted to PsychoPy from:
  Sample Python/Pygame Programs
  Simpson College Computer Science
  http://programarcadegames.com/
@@ -31,7 +31,6 @@ MY_MONITOR = 'default'
 SCREEN_WIDTH = 53
 SCREEN_RES = (1920, 1080)
 VIEWING_DIST = 65
-dummy_mode = True
 
 mon = monitors.Monitor(MY_MONITOR) # Defi ned in defaults file
 mon.setWidth(SCREEN_WIDTH)    # Width of screen (cm)
@@ -64,8 +63,6 @@ mouse = event.Mouse(win=win)
 mouse.setVisible(False)
 
 instruction_text = visual.TextStim(win,text='', wrapWidth = 600, height = 20)  
-#instruction_text.pos = (1680/2 - 100, 1050/2 - 30)
-
                     
 c = core.Clock()
 my_clock = core.Clock()
@@ -111,16 +108,15 @@ block_height = screen_size[1] / 20.0
 
 
 def generate_blocks():
+    ''' Generate a bunch of blocks '''
     blocks = []
     top = screen_size[1] / 2.0 - block_height * 2
 
     for row in range(nBlockRows):
-        # 32 columns of blocks
         for column in range(0, int(blockcount-1)):
-            # Create a block (color,x,y)
             block = Block(blue, (column + 1) * (block_width + 2)  - screen_size[0]/2, top)
             blocks.append(block)
-#            block.image.draw()
+            
         # Move the top of the next row down
         top -= block_height - 2
         print(top)
@@ -239,18 +235,13 @@ class Player():
             
             # Peek in the eye tracker buffer
             data = tracker.peek_buffer_data()
-#            print(data)
             
             # Convert from Tobii coordinate system to ssv 
             lx = [d.leftEye.gazeX for d in data]
             rx = [d.rightEye.gazeX for d in data]
-#            print(lx, rx)
 
             # Use the average position (i.e., lowpass filtered)
-            pos = (np.nanmean(rx) + np.nanmean(lx)) / 2.0 
-            pos = helpers.tobii2pix(np.array([[pos, pos]]), settings.mon)[:, 0]
-            pos = pos - screen_size[0] / 2
-            
+            pos = (np.mean(rx) + np.mean(lx)) / 2.0 - screen_size[0]/2
 
         else:
             # Get where the mouse is
@@ -326,7 +317,6 @@ while not exit_program:
        
     # Any bricks left?
     if len(blocks) == 0:
-	print 'You won!'
         exit_program = True
         
     # Paddel missed the ball
@@ -351,24 +341,38 @@ while not exit_program:
 
 try:
     df = pd.read_csv('highscore.csv', sep='\t')
-        
-    # Blink GAME OVER and show score
+    
+    highscore = np.max(np.array(df['Score'])
+    
     instruction_text.pos = (0, 0)
-    instruction_text.height = 50
-    instruction_text.text = 'GAME OVER'
-    for i in range(5):
-        instruction_text.draw()
-        win.flip()
-        core.wait(0.3)
-        win.flip()
-        core.wait(0.3)
-        
+    instruction_text.height = 50    
+    
+    if highscore >= score: 
+        # Blink HIGH SCORE
+        instruction_text.text = 'HIGH SCORE!'
+        for i in range(5):
+            instruction_text.draw()
+            win.flip()
+            core.wait(0.3)
+            win.flip()
+            core.wait(0.3)             
+    else:   
+        # Blink GAME OVER 
+        instruction_text.text = 'GAME OVER'
+        for i in range(5):
+            instruction_text.draw()
+            win.flip()
+            core.wait(0.3)
+            win.flip()
+            core.wait(0.3)
+            
+    # Show score    
     instruction_text.draw()
     instruction_text.pos = (0, - 100)
     instruction_text.text = 'Your score: ' + str(score)
     instruction_text.draw()
     instruction_text.pos = (0, - 200)
-    instruction_text.text = 'High score: ' + str(np.max(np.array(df['Score'])))          
+    instruction_text.text = 'High score: ' + str(highscore))          
     instruction_text.draw()
     win.flip()
 

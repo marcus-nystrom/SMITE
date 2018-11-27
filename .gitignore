@@ -6,6 +6,7 @@
 *.exe
 *.o
 *.so
+*.pyc
 
 # Packages #
 ############
@@ -42,4 +43,7 @@
 .Trashes
 ehthumbs.db
 Thumbs.db
-*.pkl
+
+# Other files #
+######################
+
