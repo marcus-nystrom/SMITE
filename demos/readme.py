@@ -1,4 +1,3 @@
-    
 # Import modules
 from psychopy import visual, monitors
 from psychopy import core, event, gui

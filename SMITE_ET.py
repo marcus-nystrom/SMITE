@@ -280,8 +280,8 @@ class Connect(object):
                                          fillColor = 'red', units='pix')                                         
       
         # Show images (eye image, validation resutls)
-        self.eye_image_stim = visual.GratingStim(win, units='pix', size=graphics.EYE_IMAGE_SIZE, 
-                                                 pos=(0, 0), color=(0, 0, 0))
+        self.eye_image_stim = visual.GratingStim(win, units='pix', size=graphics.EYE_IMAGE_SIZE,
+                                                    tex=np.zeros(graphics.EYE_IMAGE_SIZE))
         
         # Accuracy image 
         self.accuracy_image = visual.ImageStim(win, image=None,units='norm', size=(1.5,1.5),
@@ -580,11 +580,7 @@ class Connect(object):
             eye_image, res = self.rawSMI.get_eye_image()
             if res == 1:
                 self.eye_image_stim.tex = eye_image
-                #core.wait(1)
-                #print(eye_image.shape, eye_image.min(), eye_image.max())
-                #print(self.eye_image_stim.tex.shape, self.eye_image_stim.tex.min(), self.eye_image_stim.tex.max())
 
-            #self.eye_image_stim.draw()
             self.eye_image_stim.draw()
               
             # Show tracking monitor (not available for HiSpeed)
@@ -780,6 +776,10 @@ class Connect(object):
             if graphics.GAZE_BUTTON in k or (self.mouse.isPressedIn(self.gaze_button, buttons=[0]) and not gaze_button_pressed):
                 display_gaze = not display_gaze
                 gaze_button_pressed = True
+                
+            # Check whether mouse button released
+            if not np.any(self.mouse.getPressed()):
+                gaze_button_pressed = False
               
             # Display gaze along with four dots in the corners
             if display_gaze:
