@@ -1,6 +1,7 @@
 """
  Sample Breakout Game
  
+ Adapted to PsychoPy from:
  Sample Python/Pygame Programs
  Simpson College Computer Science
  http://programarcadegames.com/
@@ -11,20 +12,34 @@
  
 import math
 import numpy as np
-from psychopy import core, event, misc, visual, monitors, data, gui
+import os, sys
+
+from psychopy import core, event, misc, visual, monitors, data, gui, monitors
 import pandas as pd
 
-from constants_smi import *# Import constants related to ET and geometry
-         
-#mouse = event.Mouse()
+# Insert the parent directory (where SMITE is) to path
+curdir = os.path.dirname(os.path.abspath(__file__))
+os.chdir(curdir)
+sys.path.insert(0,os.path.dirname(curdir)) 
+import SMITE
+import helpers
 
-mon = monitors.Monitor(MY_MONITOR) # Defined in defaults file
+# Get settings
+eye_tracker_name = 'REDm'
+
+MY_MONITOR = 'default'
+SCREEN_WIDTH = 53
+SCREEN_RES = (1920, 1080)
+VIEWING_DIST = 65
+
+mon = monitors.Monitor(MY_MONITOR) # Defi ned in defaults file
 mon.setWidth(SCREEN_WIDTH)    # Width of screen (cm)
 mon.setDistance(VIEWING_DIST) # Distance eye / monitor (cm) 
 mon.setSizePix(SCREEN_RES)
 
+
 # Show dialogue box
-info = {'Enter your name':'your name'}
+info = {'Enter your name':'your name', 'Eye tracking':[False, True]}
 dictDlg = gui.DlgFromDict(dictionary=info,
         title='Breakout')
 if dictDlg.OK:
@@ -40,30 +55,37 @@ player_name = '_'.join([info['Enter your name'], info['dateStr']])
 win = visual.Window(monitor = mon, screen = 1, 
                     units = 'pix', fullscr = True,
                     allowGUI = False)
+                    
+print(win.size)
+
 core.wait(1) 
 mouse = event.Mouse(win=win)
 mouse.setVisible(False)
 
-instruction_text = visual.TextStim(win,text='',wrapWidth = 800,height = 20)  
-instruction_text.pos = (1680/2 - 100, 1050/2 - 30)
-
+instruction_text = visual.TextStim(win,text='', wrapWidth = 600, height = 20)  
                     
 c = core.Clock()
 my_clock = core.Clock()
          
-
-eye_tracking = True                            
+if info['Eye tracking']:
+    eye_tracking = True 
+else:
+    eye_tracking = False
 
 ### Setup a PsychoPy window for calibration
 if eye_tracking:
-   
-    import iview
 
-    tracker = iview.Connect(dummy_mode=False)
-    tracker.init_calibration(win)
+    settings = SMITE.get_defaults(eye_tracker_name)
+    tracker = SMITE.Connect(settings)
+    tracker.init()
+    
+    tracker.calibrate(win)
         
     # Start eye tracker
-    tracker.start_sample_buffer(sample_buffer_length=3)
+    tracker.start_recording()
+        
+    tracker.start_buffer(sample_buffer_length=10)
+    core.wait(1)
 
 # Define some colors
 black = (0, 0, 0)
@@ -72,7 +94,7 @@ blue = (0, 0, 1)
  
 
 screen_size = SCREEN_RES
-game_rect = visual.Rect(win, SCREEN_RES[0], SCREEN_RES[1])
+game_rect = visual.Rect(win, SCREEN_RES[0], SCREEN_RES[1], units = 'pix')
 mouse.setPos((0, -screen_size[1]/2 + 100))
 
 # information about block position
@@ -86,16 +108,15 @@ block_height = screen_size[1] / 20.0
 
 
 def generate_blocks():
+    ''' Generate a bunch of blocks '''
     blocks = []
     top = screen_size[1] / 2.0 - block_height * 2
 
     for row in range(nBlockRows):
-        # 32 columns of blocks
         for column in range(0, int(blockcount-1)):
-            # Create a block (color,x,y)
             block = Block(blue, (column + 1) * (block_width + 2)  - screen_size[0]/2, top)
             blocks.append(block)
-#            block.image.draw()
+            
         # Move the top of the next row down
         top -= block_height - 2
         print(top)
@@ -213,12 +234,11 @@ class Player():
         if eye_tracking:
             
             # Peek in the eye tracker buffer
-            data = tracker.buf.get_all()
-            #data = tracker.buf.peek()
+            data = tracker.peek_buffer_data()
             
-            
+            # Convert from Tobii coordinate system to ssv 
             lx = [d.leftEye.gazeX for d in data]
-            rx = [d.leftEye.gazeY for d in data]
+            rx = [d.rightEye.gazeX for d in data]
 
             # Use the average position (i.e., lowpass filtered)
             pos = (np.mean(rx) + np.mean(lx)) / 2.0 - screen_size[0]/2
@@ -248,6 +268,7 @@ ball.image.draw()
 
 # --- Create blocks
 blocks = generate_blocks()
+blocks_buffered = visual.BufferImageStim(win, stim=blocks)
 win.flip()
 
 # Is the game over?
@@ -274,7 +295,8 @@ while not exit_program:
     game_over = ball.update()
 
     # See if the ball hits the player paddle
-    if player.image.overlaps(ball.image) and c.getTime() > 0.5:
+    wentThrough = ball.image.pos[1] <= player.image.pos[1] and ((player.image.pos[0] - ball.image.pos[0]) / player.width<.5)
+    if (player.image.overlaps(ball.image) or wentThrough) and c.getTime() > 0.5:
         
         # The 'diff' lets you try to bounce the ball left or right
         # depending where on the paddle you hit it
@@ -294,22 +316,26 @@ while not exit_program:
        ball.bounce(0)
        score += 5
        
+       # Re-create blocks_buffered
+       blocks_buffered = visual.BufferImageStim(win, stim=blocks)
+       
     # Any bricks left?
     if len(blocks) == 0:
         exit_program = True
         
     # Paddel missed the ball
-    if ball.image.pos[1] <= player.image.pos[1]:
+    if ball.image.pos[1] <= player.image.pos[1] and not ((player.image.pos[0] - ball.image.pos[0]) / player.width<.5):
         exit_program = True
 
     # Draw all stimuli
     game_rect.draw()
-    [b.image.draw() for b in blocks]
+    blocks_buffered.draw()
     player.image.draw()
     ball.image.draw()
     
     # Draw the score
-    instruction_text.text = 'Score: ' + str(score)
+    if score > score_old:
+        instruction_text.text = 'Score: ' + str(score)
     instruction_text.draw()
     win.flip()
     
@@ -317,27 +343,43 @@ while not exit_program:
     if my_clock.getTime() > 5 :
         ball.speed *= 1.1
         my_clock.reset()
+        
+    score_old = score
 
 try:
     df = pd.read_csv('highscore.csv', sep='\t')
-        
-    # Blink GAME OVER and show score
+    
+    highscore = np.max(np.array(df['Score'])
+    
     instruction_text.pos = (0, 0)
-    instruction_text.height = 50
-    instruction_text.text = 'GAME OVER'
-    for i in range(5):
-        instruction_text.draw()
-        win.flip()
-        core.wait(0.3)
-        win.flip()
-        core.wait(0.3)
-        
+    instruction_text.height = 50    
+    
+    if highscore >= score: 
+        # Blink HIGH SCORE
+        instruction_text.text = 'HIGH SCORE!'
+        for i in range(5):
+            instruction_text.draw()
+            win.flip()
+            core.wait(0.3)
+            win.flip()
+            core.wait(0.3)             
+    else:   
+        # Blink GAME OVER 
+        instruction_text.text = 'GAME OVER'
+        for i in range(5):
+            instruction_text.draw()
+            win.flip()
+            core.wait(0.3)
+            win.flip()
+            core.wait(0.3)
+            
+    # Show score    
     instruction_text.draw()
     instruction_text.pos = (0, - 100)
     instruction_text.text = 'Your score: ' + str(score)
     instruction_text.draw()
     instruction_text.pos = (0, - 200)
-    instruction_text.text = 'High score: ' + str(np.max(np.array(df['Score'])))          
+    instruction_text.text = 'High score: ' + str(highscore))          
     instruction_text.draw()
     win.flip()
 
@@ -345,9 +387,9 @@ try:
 
     # Stop eye tracker and clean up 
     if eye_tracking:
-        tracker.stop()
+        tracker.stop_buffer()
         tracker.stop_recording()
-        tracker.disconnect()
+        tracker.de_init()
 
     # Write results to data frame
     df_player = pd.DataFrame({'Name':[player_name], 'Score':[score]})
