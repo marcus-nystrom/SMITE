@@ -8,7 +8,7 @@ import SMITE_Dummy_raw
         
 class Connect(object):
     """
-    Create a class that simplifies life for people wanting to use the SDK
+    Creates a class that simplifies life for people wanting to use the SDK
     """
     def __init__(self):
 

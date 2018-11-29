@@ -268,7 +268,7 @@ ball.image.draw()
 
 # --- Create blocks
 blocks = generate_blocks()
-blocks_buffered = visual.BufferImageStim(win, stim=blocks)
+#blocks_buffered = visual.BufferImageStim(win, stim=blocks)
 win.flip()
 
 # Is the game over?
@@ -277,6 +277,7 @@ game_over = False
 # Exit the program?
 exit_program = False
 score = 0
+score_old = 0
 
 # Main program loop
 i = 1
@@ -316,8 +317,8 @@ while not exit_program:
        ball.bounce(0)
        score += 5
        
-       # Re-create blocks_buffered
-       blocks_buffered = visual.BufferImageStim(win, stim=blocks)
+#       # Re-create blocks_buffered
+#       blocks_buffered = visual.BufferImageStim(win, stim=blocks)
        
     # Any bricks left?
     if len(blocks) == 0:
@@ -329,7 +330,7 @@ while not exit_program:
 
     # Draw all stimuli
     game_rect.draw()
-    blocks_buffered.draw()
+    [b.image.draw() for b in blocks]
     player.image.draw()
     ball.image.draw()
     
@@ -347,9 +348,17 @@ while not exit_program:
     score_old = score
 
 try:
-    df = pd.read_csv('highscore.csv', sep='\t')
     
-    highscore = np.max(np.array(df['Score'])
+    # Create the file if it doesn't exist
+    fname  = 'highscore.csv'
+    print(os.path.isfile(fname))
+    if not os.path.isfile(fname):
+        df = pd.DataFrame({'Name':[player_name], 'Score':[score]})
+        df.to_csv(fname, sep='\t')
+    else:
+        df = pd.read_csv('highscore.csv', sep='\t')
+    
+    highscore = np.max(np.array(df['Score']))
     
     instruction_text.pos = (0, 0)
     instruction_text.height = 50    
@@ -379,7 +388,7 @@ try:
     instruction_text.text = 'Your score: ' + str(score)
     instruction_text.draw()
     instruction_text.pos = (0, - 200)
-    instruction_text.text = 'High score: ' + str(highscore))          
+    instruction_text.text = 'High score: ' + str(highscore)          
     instruction_text.draw()
     win.flip()
 
@@ -395,11 +404,11 @@ try:
     df_player = pd.DataFrame({'Name':[player_name], 'Score':[score]})
 
     # Add players score to highscore sheet
-    with open('highscore.csv', 'a') as f:
+    with open(fname, 'a') as f:
         df_player.to_csv(f, sep='\t', header=False)
+            
 except Exception as e: 
     mouse.setVisible (True)
-    win.close()
     print(e)
 
 win.close()
