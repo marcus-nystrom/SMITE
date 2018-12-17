@@ -9,7 +9,6 @@ import subprocess
 import numpy as np
 import os
 from threading import Thread
-import pickle
 import helpers
 import time
 
@@ -23,7 +22,20 @@ tracking_mode_dict = {'SMART_BINOCULAR':0, 'MONOCULAR_LEFT':1,
                       'MONOCULAR_RIGHT':2, 'BINOCULAR':3, 
                       'SMART_MONOCULAR':4}
       
-
+#%% To construct a nested Class for sample
+# self.sample.leftEye.gazeX = x
+#        self.sample.leftEye.gazeY  = y
+#        self.sample.rightEye.gazeX = x
+#        self.sample.rightEye.gazeY = y
+class Dir:
+    def __init__(self):
+        self.gazeX = 0
+        self.gazeY = 0
+        
+class Eye:
+    def __init__(self):
+        self.leftEye = Dir()
+        self.rightEye = Dir()
 #%%    
         
 class Connect(Thread):
@@ -37,9 +49,8 @@ class Connect(Thread):
         be given, e.g., RED-m
         '''
         
-        # Load gaze sample (so that's in the right format)
-        with open('sample.p', 'rb') as f:
-            self.sample = pickle.load(f)
+        # Create gaze sample
+        self.sample = Eye()
             
         self.clock = core.Clock()
         self.connect_timeout = 30 # in seconds 
