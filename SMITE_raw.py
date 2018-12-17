@@ -19,7 +19,8 @@ global buf # Used to keep data in ring buffer
 # Numbers used by iView X for identify eye trackers
 ET_server_dict = {'iViewX':0, 'iViewXOEM':1, 'iViewNG':2}
 ET_device_dict = {'NONE':0, 'RED':1, 'REDm':2, 'RED250Mobile':2, 'HiSpeed':3,
-                  'MRI':4, 'HED':5, 'Custom':7, 'REDn':8}	
+                  'MRI':4, 'HED':5, 'Custom':7, 'REDn_Professional':8, 
+                  'REDn_Scientific':8}
 
 tracking_mode_dict = {'SMART_BINOCULAR':0, 'MONOCULAR_LEFT':1,
                       'MONOCULAR_RIGHT':2, 'BINOCULAR':3, 

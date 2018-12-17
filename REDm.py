@@ -34,7 +34,7 @@ eye_image_size = (240, 496)         # Size of eye images
 autoaccept = 1                      # autoaccept (2), semi autoaccept (1, accept first point) 
                                     # of accept with space bar (0)
                                     
-n_cal_points = 0                    # number of calibration points supported: [0, 1, 2, 5, 9]
+n_cal_points = 5                    # number of calibration points supported: [0, 1, 2, 5, 9]
 
 cal_speed = 1                       # pacing of calibration / validation targets [slow: 0, fast: 1]
                                     # 0: slow, 1:fast
