@@ -29,7 +29,7 @@ eye_tracker_name = 'REDm'
 
 MY_MONITOR = 'default'
 SCREEN_WIDTH = 53
-SCREEN_RES = (1920, 1080)
+SCREEN_RES = (1680, 1050)
 VIEWING_DIST = 65
 
 mon = monitors.Monitor(MY_MONITOR) # Defi ned in defaults file
@@ -363,7 +363,7 @@ try:
     instruction_text.pos = (0, 0)
     instruction_text.height = 50    
     
-    if highscore >= score: 
+    if highscore < score: 
         # Blink HIGH SCORE
         instruction_text.text = 'HIGH SCORE!'
         for i in range(5):
