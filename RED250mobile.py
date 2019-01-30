@@ -51,6 +51,10 @@ animate_calibration = False          # Show static points or animated targets
 screen = 0                          # Display stimuli on a second screen attached 
                                     # to your computer (1). Single setup (0).
 
+# Parameters to shift and scale the calibration grid
+shift_cal_grid_x = 0
+shift_cal_grid_y = 0
+scale_cal_grid = 1
 
 
 

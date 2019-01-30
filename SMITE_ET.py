@@ -84,6 +84,46 @@ class Connect(object):
         self.screen_refresh_rate = win.getActualFrameRate()
         self.mouse = event.Mouse()
         
+        # Scale or shift grid or calibration points?
+        # Do only if shift or scaling required in the settings file
+        if np.any([self.constants.shift_cal_grid_x, 
+                   self.constants.shift_cal_grid_y]) or self.scale_cal_grid != 1:
+    
+            # Reset calibration point to default values
+            self.rawSMI.reset_calibration_points()
+            
+            # Get positions of current calibration points
+            cal_pos = []
+            for p in np.arange(self.constants.n_cal_points) + 1:
+                cal_point_info = self.rawSMI.get_calibration_point(p)
+                
+                
+                cal_pos.append([cal_point_info.positionX, 
+                                cal_point_info.positionY])
+    
+            # Normalize point to -0.5->0.5 so they can be scaled
+            cal_pos = np.array(cal_pos)
+            cal_pos[:, 0] = cal_pos[:, 0] / self.screen_res[0] - 0.5
+            cal_pos[:, 1] = cal_pos[:, 1] / self.screen_res[1] - 0.5
+            
+            # Scale 
+            cal_pos[:, 0] = cal_pos[:, 0] * self.constants.scale_cal_grid
+            cal_pos[:, 1] = cal_pos[:, 1] * self.constants.scale_cal_grid
+            
+            # Rescale to pixels
+            cal_pos[:, 0] = (cal_pos[:, 0] + 0.5) * self.screen_res[0]
+            cal_pos[:, 1] = (cal_pos[:, 1] + 0.5) * self.screen_res[1]
+            
+            # ... and shift
+            cal_pos[:, 0] = cal_pos[:, 0] + self.constants.shift_cal_grid_x
+            cal_pos[:, 1] = cal_pos[:, 1] + self.constants.shift_cal_grid_y            
+            
+            # Change to new positions
+            for p in np.arange(self.constants.n_cal_points):
+                self.rawSMI.change_calibration_point(p + 1, 
+                                                     cal_pos[p, 0],
+                                                     cal_pos[p, 1])
+
         # Make the window available for all calibration functions
         self.win = win        
         

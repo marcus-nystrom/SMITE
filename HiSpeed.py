@@ -43,6 +43,11 @@ record_data_during_calibration = True
 animate_calibration = True # Show static points or animated targets
 screen = 1
 
+# Parameters to shift and scale the calibration grid
+shift_cal_grid_x = 0
+shift_cal_grid_y = 0
+scale_cal_grid = 1
+
 
 
 
