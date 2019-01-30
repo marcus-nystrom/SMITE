@@ -11,6 +11,16 @@ from psychopy.tools import monitorunittools
 from collections import deque
 import copy
 
+#%%
+def modify_calibration_grid(x, y, scale):
+    ''' Translates and scales the calibration grid
+    
+    Args:
+        x - horizontal shift (pixels). Positive value for rightward shift
+        y - vertical shift (pixels). Positive value for downward shift
+    '''
+    
+    
 
 #%% Toggle button
 class MyDot2:

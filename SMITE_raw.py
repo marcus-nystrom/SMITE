@@ -12,7 +12,6 @@ import glob
 import os
 from scipy import misc
 from ctypes import *
-#import pickle
 
 global buf # Used to keep data in ring buffer
 
@@ -29,13 +28,12 @@ tracking_mode_dict = {'SMART_BINOCULAR':0, 'MONOCULAR_LEFT':1,
 #%%    
         
 class Connect(object):
-    """
-    Basic functionally to communicate with and manage SMI eye trackers
+    """ Basic functionally to communicate with and manage SMI eye trackers
     """
     def __init__(self, in_arg):
         '''
         Constructs an instance of the SMITE interface, with specified settings. 
-        If settings is not provided, the name of an eyeTracker should 
+        If settings is not provided, the name of an eye tracker should 
         be given, e.g., RED-m
         '''
         self.clock = core.Clock()
@@ -211,6 +209,14 @@ class Connect(object):
         ''' Change calibration point 'number' to a new position (positionX, positionY)
         All system supported (WARNING: should not be done on the remotes unless
         you REALLY know what you're doing. So don't do it.)       
+        This has to be done before the calibration process is started.
+        
+        Args:
+            number - calibration point number (int)
+            positionX - x position of new point (pixels)
+            positionY - y position of new point (pixels)
+            
+        Origo of coordinate system is the uppler left corner of screen.
         '''
         res = iViewXAPI.iV_ChangeCalibrationPoint(number, positionX, positionY)
         HandleError(res)              
@@ -267,6 +273,13 @@ class Connect(object):
                 connect_timeout=30):
         ''' Connect to eye tracker server
         Supported systems: all 
+        
+        Args:
+            ip_listen       - listen ip address
+            port_listen     - list port number
+            ip_send         - send ip address
+            port_send       - send port number
+            connect_timeout - keep trying to connect for 'connect_timeout' s
         '''
         connected = False
         self.clock.reset()
@@ -361,6 +374,9 @@ class Connect(object):
         See chapter Setting up RED Geometry in the iView X SDK Manual.
         
         Supported systems: all but HiSpeed
+        
+        Args:
+            profile - string with profile name
         '''              
         res = iViewXAPI.iV_DeleteREDGeometry(profile)
         HandleError(res)
@@ -427,6 +443,9 @@ class Connect(object):
         '''
         Enables all AOIs with the given name
         Supported systems: all but RED-n and RED250 mobile.
+        
+        Args:
+            aoi_name - string with name of aoi
         '''  
         
         res = iViewXAPI.iV_EnableAOI(c_char(aoi_name))
@@ -437,6 +456,9 @@ class Connect(object):
         '''
         Disables an AOI group
         Supported systems: all but RED-n and RED250 mobile.
+        
+        Args:
+            aoi_group - string with name of aoi group
         '''
         
         res = iViewXAPI.iV_EnableAOIGroup(c_char(aoi_group))
@@ -468,6 +490,13 @@ class Connect(object):
         ''' Get accuracy. Only possible after a successful validation
         If the parameter visualization is set to 1 the accuracy
         data will be visualized in a dialog window.
+        
+        Args:
+            visualization - int
+            
+        Returns:
+            accuracy values for left and right eyes
+            
         ''' 
 
         res = iViewXAPI.iV_GetAccuracy(byref(accuracyData), visualization)
@@ -479,6 +508,12 @@ class Connect(object):
     #%%         
     def get_accuracy_image(self, fname=None):
         ''' Returns validation screen image and optinally save it to disk
+        
+        Args:
+            fname - name of image to be saved to disk, e.g., 'im.png'
+            
+        Returns:
+            im - image as n x m x 3 numpy array
         '''
         
         # update imageData with the most recent accuracy image        
@@ -505,6 +540,9 @@ class Connect(object):
         '''
         Returns the current AOI value.
         Supported systems: all 
+        
+        Returns:
+            aoiOutputValue - int
         '''  
         
         res = iViewXAPI.iV_getAOIOutputValue(byref(aoiOutputValue))
@@ -517,6 +555,9 @@ class Connect(object):
         ''' Updates stored calibrationData information with currently selected 
             parameters.
         Supported systems: RED-n and RED250 Mobile 
+        
+        Returns:
+            calibrationData - structure containing information about calibration
         '''
         
         res = iViewXAPI.iV_getCalibrationParameter(byref(calibrationData))
@@ -527,6 +568,13 @@ class Connect(object):
     def get_calibration_point(self, calibration_point_number):
         ''' Delivers information about a calibration point.
         Supported systems: all
+        
+        Args:
+            calibration_point_number - number of calibration point
+        
+        Returns:
+            calibrationPoint - struct with info about calibration point
+            Contains number (int), positionX (int), and positionY (int)
         '''
         
         res = iViewXAPI.iV_getCalibrationPoint(c_int(calibration_point_number),
@@ -539,6 +587,9 @@ class Connect(object):
         ''' Delivers fixation quality information about a calibration point. 
         If the passed parameter left or right is NULL, no data will be returned
         Supported systems: RED-n and RED250 Mobile 
+        
+        Args:
+            calibration_point_number - number of calibration point        
         '''      
         
         res = iViewXAPI.iV_getCalibrationPointQuality(c_int(calibration_point_number),
@@ -550,7 +601,10 @@ class Connect(object):
     def get_calibration_quality_image(self):
         ''' 
         Same functionally as get_accuracy_image
-        Supported systems: RED-n and RED250 Mobile         
+        Supported systems: RED-n and RED250 Mobile 
+
+        Returns:
+            imageData - 
         '''   
         
         res = iViewXAPI.iV_getCalibrationPoint(byref(imageData))
@@ -1668,16 +1722,24 @@ class Connect(object):
         buf.append(sample)
     #%%
     def consume_buffer_data(self):
-        ''' Consume all samples '''
+        ''' Get data from the online buffer. The returned samples are removed 
+        from the buffer
+        '''
         return buf.get_all()
         
     def peek_buffer_data(self):
-        ''' Consume all samples '''
+        ''' Get data from the online buffer. The returned samples remain in 
+        the buffer
+        '''
         return buf.peek()
         
     #%% 
     def start_buffer(self, sample_buffer_length=3):
-        '''Starts sample buffer'''
+        '''Start recording eye-movement data into buffer for online use
+        
+        Args:
+            sample_buffer_length - size of buffer in samples
+        '''
         
         # Initialize the ring buffer
         global buf
@@ -1755,6 +1817,10 @@ class Connect(object):
             
     #%%     
     def de_init(self, close_et_server=False):
+        ''' Close connection to the eye tracker and clean up
+        Args:
+            close_et_server - closes the eye tracker server application
+        '''
         
         self.disable_processor_high_performance_mode()
         self.disconnect()
@@ -1764,8 +1830,7 @@ class Connect(object):
             
     #%%             
     def average_data(self, average = False):
-        '''
-        Should  data be averaged across the eyes?    
+        ''' Average data from both eyes.
         ''' 
         
         if average:

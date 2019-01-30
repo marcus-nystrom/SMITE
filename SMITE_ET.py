@@ -18,8 +18,7 @@ import SMITE_raw
 global buf
       
 class Connect(object):
-    """
-    Create a class that simplifies life for people wanting to use the SDK
+    """ Create a class that simplifies life for people wanting to use the SDK
     """
     def __init__(self, in_arg):
         '''
@@ -35,6 +34,8 @@ class Connect(object):
         self.calibration_history = []
         
         self.clock = core.Clock()
+        
+        # Connect to a class to use 'raw' SMI functionality
         rawSMI = SMITE_raw.Connect(in_arg)
         self.rawSMI = rawSMI
         self.constants = rawSMI.constants
@@ -54,8 +55,8 @@ class Connect(object):
     
     #%%  
     def init(self):
-        ''' Connect to eye tracker
-        and apply settings
+        ''' Connect to the SMI eye tracker and initialize it according to 
+        the requested settings
         '''
         self.rawSMI.init()        
         self.geom = self.rawSMI.get_current_RED_geometry()
@@ -63,11 +64,20 @@ class Connect(object):
        
     #%%    
     def is_connected(self):
+        ''' Report status of the connection to the eye tracker
+        
+        Returns:
+            rawSMI.is_connected() (boolean)
+        '''
+        
         return self.rawSMI.is_connected()
     
     #%% Init calibration
     def calibrate(self, win):
-        ''' Master function for setup and calibration
+        ''' Do participant setup and calibration, and validation
+        
+        Args: 
+            win - a PsychoPy window
         '''
         
         self.screen_res = win.size
@@ -128,69 +138,150 @@ class Connect(object):
               
     #%%  
     def start_recording(self):
+        ''' Start recording eye-movement data to idf file
+        '''
         self.rawSMI.start_recording()
         
     #%% 
     def start_buffer(self, sample_buffer_length=3):
+        '''Start recording eye-movement data into buffer for online use
+        
+        Args:
+            sample_buffer_length - size of buffer in samples
+        '''
+        
         self.rawSMI.start_buffer(sample_buffer_length=sample_buffer_length)
         
     #%% 
     def send_message(self, msg):
+        ''' Insert message into idf file
+        '''
         self.rawSMI.send_image_message(msg)
         
     #%%
     def get_latest_sample(self):
+        ''' Get most recent data sample
+        '''
         sample  = self.rawSMI.get_latest_sample()
         return sample
         
     #%%
     def consume_buffer_data(self):
+        ''' Get data from the online buffer. The returned samples are removed 
+        from the buffer
+        '''
         data = self.rawSMI.consume_buffer_data()
         return data
     
     #%%
     def peek_buffer_data(self):
+        ''' Get data from the online buffer. The returned samples remain in 
+        the buffer
+        '''
         data = self.rawSMI.peek_buffer_data()
         return data    
     
     #%% 
     def stop_buffer(self):
+        ''' Stop recording data into buffer
+        '''
         self.rawSMI.start_buffer()    
         
     #%%  
     def stop_recording(self):
+        ''' Stop recording data into idf file 
+        '''
         self.rawSMI.stop_recording()
         
         
     #%% 
     def save_data(self, filename, description = "", 
                    user = None, overwrite=0):
+        ''' Save idf file to specified location
+        The data recording needs to be stopped using iV_StopRecording
+        before the data buffer can be saved to given location. 
+        The filename can include the path. If the connected eye tracking device 
+        is an HED, scene video buffer is written, too. iV_SaveData will not return
+        until the data has been saved.
+        
+        Args:
+            filename - full path including the filename of the data file being created
+            description - Optional experiment description tag stored in the idf file. This tag is available in BeGaze and in the text export from an idf file.
+            user - Optional name of test person. This tag is available in BeGaze and in the text export
+                    from an idf file.
+            overwrite - Overwriting policy.
+            • 0: do not overwrite file filename if it already exists
+            • 1: overwrite file filename if it already exists
+            
+        If there is already a file with a certain name 'name.idf', this file will not 
+        be overwritten, but save as another file with name 'name_1.idf'.            
+        
+        '''
         self.rawSMI.save_data(filename, description = description, 
                    user = user, overwrite=overwrite)        
     #%%
     def de_init(self):
+        ''' Close connection to the eye tracker and clean up
+        '''
         self.rawSMI.de_init()
         
     #%%
     def set_begaze_trial_image(self, imname):
+        ''' Put specially prepared message in idf file to notify BeGaze what 
+        stimulus image/video belongs to a trial
+        
+        Args:
+            imname - filename of stimulus that is shown on this trial. 
+            Must have one of the following extentions: .png, .jpg, .jpeg, .bmp, 
+            or .avi
+        '''
+        
         self.rawSMI.set_begaze_trial_image(imname)
     #%%        
     def set_begaze_key_press(self, msg):
+        ''' Put specially prepared message in idf file that shows up as 
+        keypress in BeGaze
+        
+        Args: 
+            msg - string that will show up on BeGaze's event timeline. 
+            Can be name of a key, but also other arbitrary string.
+        '''
         self.rawSMI.set_begaze_key_press(msg)
     #%%
     def set_begaze_mouse_click(self, which, x, y):
+        ''' Put specially prepared message in idf file that shows up as mouse 
+        click in BeGaze.
+        
+        Args:
+            which: string indicating which mouse button, left or right
+            x: horizontal coordinate of mouse click
+            y: vertical coordinate of mouse click
+        '''
         self.rawSMI.set_begaze_mouse_click(which, x, y)
         
     #%%
     def start_eye_image_recording(self, image_name, path):
+        ''' Start recording eye images to file. Not supported on RED250mobile, 
+        REDn Scientific, and REDn Professional.
+        
+        Args:
+            image_name - filename where recorded eye images will be saved
+            path - path where the eye images are stored
+            
+        Example: start_eye_image_recording('test',"c:\\eyeimages\\" )
+        '''
         self.rawSMI.start_eye_image_recording(image_name, path)
     #%%
     def stop_eye_image_recording(self, image_name, path):
+        ''' Stop recording eye images to file 
+        '''
         self.rawSMI.start_eye_image_recording(image_name, path)        
         
     #%% 
     def set_dummy_mode(self):
-        # Set current class to Dummy class
+        ''' Enable dummy mode, which allows running the program without an 
+        eye tracker connected
+        '''
         import SMITE_Dummy, SMITE_Dummy_raw
         self.__class__ = SMITE_Dummy.Connect
         self.__class__.__init__(self)    
@@ -198,7 +289,11 @@ class Connect(object):
 
     #%% 
     def _create_calibration_buttons(self, win):
-        '''Creates click buttons that are used during calibration'''
+        '''Creates click buttons that are used during calibration
+        
+        Args: 
+            win - PsychoPy window
+        '''
         
         # Find out ratio aspect of (16:10) or 
         screen_res = win.size
@@ -414,8 +509,15 @@ class Connect(object):
     #%%        
     def _run_calibration(self, deviations, show_instructions=False,
                    select_best_calibration=False, optional=False):
-        """
-        Calibrate the system
+        """ Run the calibration
+        
+        Args: 
+            deviations - list containing results from previous calibrations
+            show_instruction - show calibration instructions 
+            select_best_calibration - option to store and select from all performed
+                                        calibrations
+            optional - is the calibration optional or required (allows you to 
+                       skip the calibration if set to True).
         """
                 
         self.win.flip()
@@ -476,8 +578,8 @@ class Connect(object):
     #%%     
     def _advanced_setup(self):
         ''' Shows eye image and tracking monitor
-        Good if you're having problems in the circle setup, 
-        and want to see what's wrong.
+        Good if you are having problems in the circle setup, 
+        and want to see what is wrong.
         
         '''
         print('advanced mode')
@@ -613,7 +715,9 @@ class Connect(object):
         return action
     #%%     
     def _show_validation_screen(self, deviations):
-        ''' Shows validation image after a validation has been completed
+        ''' Shows validation image after a validation has been completed.
+        The validation screen includes both visual and numerical feedback 
+        about the calibration.
         '''    
         
         # Center position of presented calibration values
@@ -809,6 +913,9 @@ class Connect(object):
         '''
         Draw own calibration dots in PsychoPy instead of using visualizations by SMI
         Used for both valication and calibration. 
+        
+        Args:
+            mode - calibrate ('cal') or validate ('val')
         '''
         
         # If in validation mode, and semiautomatic mode is used, skip manual accept of first point
@@ -942,12 +1049,11 @@ class Connect(object):
         
 
     #%%                           
-    def _show_gaze(self, screen_res):
-        '''
-        Displays gaze data until a keypress
+    def _show_gaze(self):
+        ''' Display gaze data until a keypress
         '''
         while True:
-            self._draw_gaze(screen_res)
+            self._draw_gaze()
             k = event.getKeys()
             if k:
                 break
@@ -955,9 +1061,8 @@ class Connect(object):
             #core.wait(1.0 / self.screen_refresh_rate)
             self.win.flip()
     #%%             
-    def _draw_gaze(self, screen_res):
-        '''
-        Draws gaze data
+    def _draw_gaze(self):
+        '''  Draws gaze data as circles for both eyes
         '''
             
         # Get latest gaze data and draw them
