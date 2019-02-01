@@ -40,9 +40,6 @@ et_sample = visual.Circle(win, radius  = 20,
 mouse = event.Mouse(win=win)                                  
 
 
-settings = SMITE.get_defaults(eye_tracker_name)
-
-
 tracker = SMITE.Connect(settings)
 
 

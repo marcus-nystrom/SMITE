@@ -177,9 +177,16 @@ class Connect(object):
                 self.calibration_history.append(devs + ['not used'])  
               
     #%%  
-    def start_recording(self):
+    def start_recording(self, clear_buffer=False):
         ''' Start recording eye-movement data to idf file
+        
+        Args:
+            clear_buffer - clear IDF buffer (removes all data)
         '''
+        
+        if clear_buffer:
+            self.rawSMI.clear_recording_buffer()
+            
         self.rawSMI.start_recording()
         
     #%% 
@@ -195,12 +202,22 @@ class Connect(object):
     #%% 
     def send_message(self, msg):
         ''' Insert message into idf file
+        
+        Args: 
+            msg - message string to put into buffer
         '''
+        
         self.rawSMI.send_image_message(msg)
         
     #%%
     def get_latest_sample(self):
         ''' Get most recent data sample
+        
+        Returns:
+            sample 
+            
+            Ex: sample.leftEye.gazeY
+            See SMI manual for full description of what sample contains
         '''
         sample  = self.rawSMI.get_latest_sample()
         return sample
@@ -209,6 +226,9 @@ class Connect(object):
     def consume_buffer_data(self):
         ''' Get data from the online buffer. The returned samples are removed 
         from the buffer
+        
+        Returns:
+            data - list of samples (see get_latest_sample)
         '''
         data = self.rawSMI.consume_buffer_data()
         return data
@@ -217,12 +237,15 @@ class Connect(object):
     def peek_buffer_data(self):
         ''' Get data from the online buffer. The returned samples remain in 
         the buffer
+        
+        Returns:
+            data - list of samples (see get_latest_sample)        
         '''
         data = self.rawSMI.peek_buffer_data()
         return data    
     
     #%% 
-    def stop_buffer(self):
+    def stop_buffer(self, clear_buffer=False):
         ''' Stop recording data into buffer
         '''
         self.rawSMI.start_buffer()    

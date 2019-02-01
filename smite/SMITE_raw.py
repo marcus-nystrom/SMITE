@@ -1733,6 +1733,11 @@ class Connect(object):
         '''
         return buf.peek()
         
+        
+    def clear_buffer_data(self):
+        ''' Clears buffer. 
+        '''
+        buf.clear()
     #%% 
     def start_buffer(self, sample_buffer_length=3):
         '''Start recording eye-movement data into buffer for online use
