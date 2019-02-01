@@ -259,7 +259,7 @@ class Connect(object):
         
     #%% 
     def save_data(self, filename, description = "", 
-                   user = None, overwrite=0):
+                   user = None, append_version=True):
         ''' Save idf file to specified location
         The data recording needs to be stopped using iV_StopRecording
         before the data buffer can be saved to given location. 
@@ -272,16 +272,13 @@ class Connect(object):
             description - Optional experiment description tag stored in the idf file. This tag is available in BeGaze and in the text export from an idf file.
             user - Optional name of test person. This tag is available in BeGaze and in the text export
                     from an idf file.
-            overwrite - Overwriting policy.
-            • 0: do not overwrite file filename if it already exists
-            • 1: overwrite file filename if it already exists
-            
-        If there is already a file with a certain name 'name.idf', this file will not 
-        be overwritten, but save as another file with name 'name_1.idf'.            
+            append_version - append version number to file if exists.            
+                If True, and there is already a file with a certain name 'name.idf', this file will not 
+                be overwritten, but save as another file with name 'name_1.idf'.            
         
         '''
         self.rawSMI.save_data(filename, description = description, 
-                   user = user, overwrite=overwrite)        
+                   user = user, append_version=append_version)        
     #%%
     def de_init(self):
         ''' Close connection to the eye tracker and clean up

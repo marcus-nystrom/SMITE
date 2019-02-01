@@ -1077,7 +1077,7 @@ class Connect(object):
         
     #%%             
     def save_data(self, filename, description = "", 
-                   user = None, overwrite=0):
+                   user = None, append_version=True):
         ''' Writes recorded data buffer to disc. 
         The data recording needs to be stopped using iV_StopRecording
         before the data buffer can be saved to given location. 
@@ -1093,9 +1093,7 @@ class Connect(object):
             description - Optional experiment description tag stored in the idf file. This tag is available in BeGaze and in the text export from an idf file.
             user - Optional name of test person. This tag is available in BeGaze and in the text export
                     from an idf file.
-            overwrite - Overwriting policy.
-            • 0: do not overwrite file filename if it already exists
-            • 1: overwrite file filename if it already exists
+            append_version - append version number to file if exists (e.g., _1, _2, etc)
         
         Supported systems: all 
         
@@ -1129,7 +1127,7 @@ class Connect(object):
                 
                 # if the file exists
                 if filename + filename_ext == f_temp:
-                    if overwrite == 1:
+                    if not append_version:
                         raise ValueError('Warning! Filename already exists')
                     else: # append '_i to filename
                         filename_ext = '_' + str(i)          
@@ -1144,7 +1142,7 @@ class Connect(object):
         # Add the new extension the the filename        
         filename = os.sep.join([path, filename + filename_ext + ext])
         
-        # If two computer setup (ToDo)
+        # If two computer setup (TODO)
 #        if not ip_send == ip_listen:
 #            # Two computer setup: file gets saved on eye-tracker
 #            # computer (do so with without path info and allowing
@@ -1160,7 +1158,10 @@ class Connect(object):
 #        else:
 #            pass
 #            print(filename)
-        res = iViewXAPI.iV_SaveData(c_char_p(filename.encode('ascii')), c_char_p(description.encode('ascii')), c_char_p(user.encode('ascii')), overwrite)
+        res = iViewXAPI.iV_SaveData(c_char_p(filename.encode('ascii')), 
+                                    c_char_p(description.encode('ascii')), 
+                                    c_char_p(user.encode('ascii')), 
+                                    0) # Never overwrite existing file with the same name
         HandleError(res)       
         
     #%% 
