@@ -27,8 +27,9 @@ the following interface:
 SMITE.get_defaults('trackerName');` Supported tracker Names are `HiSpeed`,
 `RED`, `REDm`, `RED250mobile`, `REDn_Scientific`, and `REDn_Professional`.
 2. edit settings if wanted
-3. initialize SMITE using this settings struct: `EThndl = SMITE(settings)`
+3. initialize SMITE using this settings struct: `EThndl = SMITE(settings)
 
+## API
 #### Methods
 The following method calls are available on a SMITE instance
 
