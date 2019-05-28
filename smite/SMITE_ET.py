@@ -87,7 +87,7 @@ class Connect(object):
         # Scale or shift grid or calibration points?
         # Do only if shift or scaling required in the settings file
         if np.any([self.constants.shift_cal_grid_x, 
-                   self.constants.shift_cal_grid_y]) or self.scale_cal_grid != 1:
+                   self.constants.shift_cal_grid_y]) or self.constants.scale_cal_grid != 1:
     
             # Reset calibration point to default values
             self.rawSMI.reset_calibration_points()
