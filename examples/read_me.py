@@ -9,7 +9,7 @@ import os, sys
 curdir = os.path.dirname(os.path.abspath(__file__))
 os.chdir(curdir)
 sys.path.insert(0,os.path.dirname(curdir)) 
-from SMITE import SMITE, helpers
+from smite import SMITE, helpers
 
 MY_MONITOR = 'default'
 SCREEN_WIDTH = 53

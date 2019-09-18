@@ -957,7 +957,7 @@ class Connect(object):
                 for i in self.POS_CAL_CHECK_DOTS:
                     self.setup_dot.setPos(i)
                     self.setup_dot.draw()
-                self._draw_gaze(self.win.size)
+                self._draw_gaze()
         
             self.win.flip() 
 
