@@ -15,14 +15,15 @@ SMITE is licensed under the Creative Commons Attribution 4.0 (CC BY 4.0) license
 `demos/read_me.py` shows a minimal example of using the toolbox's
 functionality.
 
-To run the toolbox, it is required to install the SMI iViewX SDK version
-4.4.26. PsychoPy 1.90.1 standalone is recommended. 
+To run the toolbox, it is required to  PsychoPy 1.90.1 standalone is recommended. 
 
-Tested on Windows PsychoPy 1.90.1. Also tested with PsychoPy3 (but see issues below)
+Tested on Windows PsychoPy using Python 2.7. Also tested with PsychoPy3 (Python 3.6, but see issues below)
 
-## To get started
-To get started on Windows:
-1. Download [PsychoPy (version 2, e.g., StandalonePsychoPy3_PY2-3.2.3-win32.exe
+## To get started (Windows)
+
+
+1. Install the SMI iViewX SDK version 4.4.26.
+1. Download [PsychoPy (e.g., StandalonePsychoPy3_PY2-3.2.3-win32.exe
 )](https://www.psychopy.org)
 1. Download and install [git](https://www.git-scm.com/downloads)
 1. Open the command window
@@ -31,7 +32,8 @@ To get started on Windows:
 1. Download the 'examples' folder and run read_me.py (first change the monitor settings and the eye tracker name in read_me.py).
 	
 Alternatively:
-1. Download [PsychoPy (version 2, e.g., StandalonePsychoPy3_PY2-3.2.3-win32.exe
+1. Install the SMI iViewX SDK version 4.4.26.
+1. Download [PsychoPy (e.g., StandalonePsychoPy3_PY2-3.2.3-win32.exe
 )](https://www.psychopy.org)
 1. Download or clone the SMITE folder
 1. Add the downloaded SMITE-folder to path in PsychoPy (under file->preferences)
