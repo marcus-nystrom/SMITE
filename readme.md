@@ -20,7 +20,6 @@ To run the toolbox, it is required to install the SMI iViewX SDK version
 
 Tested on Windows PsychoPy 1.90.1. Also tested with PsychoPy3 (but see issues below)
 
-## Installation
 ## To get started
 To get started on Windows:
 1. Download [PsychoPy (version 2, e.g., StandalonePsychoPy3_PY2-3.2.3-win32.exe
