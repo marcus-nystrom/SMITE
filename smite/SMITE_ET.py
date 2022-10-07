@@ -248,7 +248,9 @@ class Connect(object):
     def stop_buffer(self, clear_buffer=False):
         ''' Stop recording data into buffer
         '''
-        self.rawSMI.start_buffer()    
+        self.rawSMI.stop_buffer()    
+        if clear_buffer:
+            self.rawSMI.clear_buffer_data()
         
     #%%  
     def stop_recording(self):
