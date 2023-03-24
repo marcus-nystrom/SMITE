@@ -292,8 +292,12 @@ class Connect(object):
                                            c_int(port_send))
             else:
                 res = iViewXAPI.iV_ConnectLocal()
-                
-                                       
+                if res != 1:
+                    res = iViewXAPI.iV_Connect(c_char_p(ip_listen.encode('ascii')),
+                                               c_int(port_listen),
+                                               c_char_p(ip_send.encode('ascii')),
+                                               c_int(port_send))                  
+                                                        
             # If eye tracker is not started, start it and try to connect again
             if res != 1:
                 
