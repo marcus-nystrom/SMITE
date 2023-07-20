@@ -12,7 +12,9 @@ setup(
     author=main_ns['__author__'],
     author_email=main_ns['__email__'],
     description=main_ns['__description__'],
-    long_description=open('README.md').read(),
+	with open("README.md", "r") as file:
+		long_description = file.read()
+    #long_description=open('README.md').read(),
     long_description_content_type = 'text/markdown',
     url=main_ns['__url__'],
     project_urls={
