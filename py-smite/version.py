@@ -1,6 +1,6 @@
 __version__ = "1.0.0"
 
-__title__ = "titta"
+__title__ = "py-smite"
 __description__ = "SMITE is a toolbox for using eye trackers from SMI with Python, specifically offering integration with PsychoPy."
 __url__ = "https://github.com/marcus-nystrom/SMITE"
 __uri__ = __url__
