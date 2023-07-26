@@ -21,7 +21,7 @@ setup(
     license=main_ns['__license__'],
 
     packages=['py-smite'],
-    python_requires="=3.6",
+    python_requires='==2.7',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Science/Research',
