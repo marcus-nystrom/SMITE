@@ -15,29 +15,16 @@ SMITE is licensed under the Creative Commons Attribution 4.0 (CC BY 4.0) license
 `demos/read_me.py` shows a minimal example of using the toolbox's
 functionality.
 
-To run the toolbox, it is required to  PsychoPy 1.90.1 standalone is recommended. 
+Tested on Windows using PsychoPy with Python 2.7. Also tested with PsychoPy3 (Python 3.6, but see issues below)
 
-Tested on Windows PsychoPy using Python 2.7. Also tested with PsychoPy3 (Python 3.6, but see issues below)
+## To get started
+If you know what you are doing, install SMITE using: `pip install py-smite` or `python -m pip install py-smite`.
 
-## To get started (Windows)
+If you use a standalone PsychoPy installation, do the following steps:
+1. Go to `C:\Program Files\PsychoPy` (or wherever you installed PsychoPy) and open a command prompt in the same folder as where you find `python.exe` (should be the main PsychoPy install folder). So the command prompt you have should start with something like `C:\Program Files\PsychoPy>`
+1. Here you can then pip-install py-smite, by issuing a command like `python -m pip install py-smite --upgrade`.
 
-
-1. Install the SMI iViewX SDK version 4.4.26.
-1. Download [PsychoPy (e.g., StandalonePsychoPy3_PY2-3.2.3-win32.exe
-)](https://www.psychopy.org)
-1. Download and install [git](https://www.git-scm.com/downloads)
-1. Open the command window
-	1. Go the the PsychoPy folder (e.g., C:\Program Files (x86)\PsychoPy)
-	1. type 'python -m pip install git+https://github.com/marcus-nystrom/SMITE.git#egg=SMITE' 
-1. Download the 'examples' folder and run read_me.py (first change the monitor settings and the eye tracker name in read_me.py).
-	
-Alternatively:
-1. Install the SMI iViewX SDK version 4.4.26.
-1. Download [PsychoPy (e.g., StandalonePsychoPy3_PY2-3.2.3-win32.exe
-)](https://www.psychopy.org)
-1. Download or clone the SMITE folder
-1. Add the downloaded SMITE-folder to path in PsychoPy (under file->preferences)
-1. Run read_me.py (first change the monitor settings and the eye tracker name in read_me.py).
+Then run `read_me.py` from the 'examples' folder. Reading through `read_me.py` should provide a good starting point for most users of SMITE.
 
 ## Usage
 As demonstrated in the demo scripts, the toolbox is configured through
