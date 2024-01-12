@@ -1,4 +1,4 @@
-__version__ = "1.0.0rc1"
+__version__ = "1.0.0"
 
 __title__ = "py-smite"
 __description__ = "SMITE is a toolbox for using eye trackers from SMI with Python, specifically offering integration with PsychoPy."
