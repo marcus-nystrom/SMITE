@@ -18,11 +18,11 @@ functionality.
 Tested on Windows using PsychoPy with Python 2.7. Also tested with PsychoPy3 (Python 3.6, but see issues below)
 
 ## To get started
-If you know what you are doing, install SMITE using: `pip install py-smite` or `python -m pip install py-smite`.
+If you know what you are doing, install SMITE using: `pip install py_smite` or `python -m pip install py_smite`.
 
 If you use a standalone PsychoPy installation, do the following steps:
 1. Go to `C:\Program Files\PsychoPy` (or wherever you installed PsychoPy) and open a command prompt in the same folder as where you find `python.exe` (should be the main PsychoPy install folder). So the command prompt you have should start with something like `C:\Program Files\PsychoPy>`
-1. Here you can then pip-install py-smite, by issuing a command like `python -m pip install py-smite --upgrade`.
+1. Here you can then pip-install py_smite, by issuing a command like `python -m pip install py_smite --upgrade`.
 
 Then run `read_me.py` from the 'examples' folder. Reading through `read_me.py` should provide a good starting point for most users of SMITE.
 
