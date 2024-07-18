@@ -21,7 +21,7 @@ import pandas as pd
 curdir = os.path.dirname(os.path.abspath(__file__))
 os.chdir(curdir)
 sys.path.insert(0,os.path.dirname(curdir)) 
-from smite import SMITE, helpers
+from py_smite import SMITE, helpers
 
 # Get settings
 eye_tracker_name = 'REDm'

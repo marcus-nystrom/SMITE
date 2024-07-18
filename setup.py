@@ -2,7 +2,7 @@ from setuptools import setup
 from distutils.util import convert_path
 
 main_ns = {}
-ver_path = convert_path('py-smite/version.py')
+ver_path = convert_path('py_smite/version.py')
 with open(ver_path) as ver_file:
     exec(ver_file.read(), main_ns)
 
@@ -20,7 +20,7 @@ setup(
     },
     license=main_ns['__license__'],
 
-    packages=['py-smite'],
+    packages=['py_smite'],
     python_requires='>=2.7',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
