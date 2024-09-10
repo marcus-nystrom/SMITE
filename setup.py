@@ -16,7 +16,7 @@ setup(
     long_description_content_type = 'text/markdown',
     url=main_ns['__url__'],
     project_urls={
-        "Source Code": main_ns['__url__'],
+        'Source Code': main_ns['__url__'],
     },
     license=main_ns['__license__'],
 

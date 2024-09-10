@@ -45,95 +45,95 @@ import platform
 #===========================
 
 class CSystem(Structure):
-	_fields_ = [("samplerate", c_int),
-	("iV_MajorVersion", c_int),
-	("iV_MinorVersion", c_int),
-	("iV_Buildnumber", c_int),
-	("API_MajorVersion", c_int),
-	("API_MinorVersion", c_int),
-	("API_Buildnumber", c_int),
-	("iV_ETDevice", c_int)]
+	_fields_ = [('samplerate', c_int),
+	('iV_MajorVersion', c_int),
+	('iV_MinorVersion', c_int),
+	('iV_Buildnumber', c_int),
+	('API_MajorVersion', c_int),
+	('API_MinorVersion', c_int),
+	('API_Buildnumber', c_int),
+	('iV_ETDevice', c_int)]
 
 class CCalibration(Structure):
-	_fields_ = [("method", c_int),
-	("visualization", c_int),
-	("displayDevice", c_int),
-	("speed", c_int),
-	("autoAccept", c_int),
-	("foregroundBrightness", c_int),
-	("backgroundBrightness", c_int),
-	("targetShape", c_int),
-	("targetSize", c_int),
-	("targetFilename", c_char * 256)]
+	_fields_ = [('method', c_int),
+	('visualization', c_int),
+	('displayDevice', c_int),
+	('speed', c_int),
+	('autoAccept', c_int),
+	('foregroundBrightness', c_int),
+	('backgroundBrightness', c_int),
+	('targetShape', c_int),
+	('targetSize', c_int),
+	('targetFilename', c_char * 256)]
 
 class CEye(Structure):
-	_fields_ = [("gazeX", c_double),
-	("gazeY", c_double),
-	("diam", c_double),
-	("eyePositionX", c_double),
-	("eyePositionY", c_double),
-	("eyePositionZ", c_double)]
+	_fields_ = [('gazeX', c_double),
+	('gazeY', c_double),
+	('diam', c_double),
+	('eyePositionX', c_double),
+	('eyePositionY', c_double),
+	('eyePositionZ', c_double)]
 
 class CSample(Structure):
-	_fields_ = [("timestamp", c_longlong),
-	("leftEye", CEye),
-	("rightEye", CEye),
-	("planeNumber", c_int)]
+	_fields_ = [('timestamp', c_longlong),
+	('leftEye', CEye),
+	('rightEye', CEye),
+	('planeNumber', c_int)]
 
 class CEvent(Structure):
-	_fields_ = [("eventType", c_char),
-	("eye", c_char),
-	("startTime", c_longlong),
-	("endTime", c_longlong),
-	("duration", c_longlong),
-	("positionX", c_double),
-	("positionY", c_double)]
+	_fields_ = [('eventType', c_char),
+	('eye', c_char),
+	('startTime', c_longlong),
+	('endTime', c_longlong),
+	('duration', c_longlong),
+	('positionX', c_double),
+	('positionY', c_double)]
 
 class CAccuracy(Structure):
-	_fields_ = [("deviationLX",c_double),
-				("deviationLY",c_double),
-				("deviationRX",c_double),
-				("deviationRY",c_double)]
+	_fields_ = [('deviationLX',c_double),
+				('deviationLY',c_double),
+				('deviationRX',c_double),
+				('deviationRY',c_double)]
     
 class CImage(Structure):
-	_fields_ = [("imageHeight",c_int),
-				("imageWidth",c_int),
-				("imageSize",c_int),
-				("imageBuffer", POINTER(c_char))]
+	_fields_ = [('imageHeight',c_int),
+				('imageWidth',c_int),
+				('imageSize',c_int),
+				('imageBuffer', POINTER(c_char))]
 				
     
 class CCalibrationPoint(Structure):
-    _fields_ = [("number",c_int),
-                ("positionX",c_int),
-                ("positionY",c_int)]
+    _fields_ = [('number',c_int),
+                ('positionX',c_int),
+                ('positionY',c_int)]
                 
 class CEyePosition(Structure):
-    _fields_ = [("validity",c_int),
-                ("relativePositionX",c_double),  
-                ("relativePositionY",c_double),
-                ("relativePositionZ",c_double),
-                ("positionRatingX",c_double),  
-                ("positionRatingY",c_double),
-                ("positionRatingZ",c_double)]
+    _fields_ = [('validity',c_int),
+                ('relativePositionX',c_double),  
+                ('relativePositionY',c_double),
+                ('relativePositionZ',c_double),
+                ('positionRatingX',c_double),  
+                ('positionRatingY',c_double),
+                ('positionRatingZ',c_double)]
 
 class CTrackingStatus(Structure):
-    _fields_ = [("timestamp", c_longlong),
-                ("leftEye", CEyePosition),
-                ("rightEye", CEyePosition),
-                ("total", CEyePosition)]
+    _fields_ = [('timestamp', c_longlong),
+                ('leftEye', CEyePosition),
+                ('rightEye', CEyePosition),
+                ('total', CEyePosition)]
 
 class CREDGeometry(Structure):
-    _fields_ = [("redGeometry", c_int),
-                ("monitorSize", c_int),
-                ("setupName", c_char * 256),
-                ("stimX", c_int),
-                ("stimY", c_int),
-                ("stimHeightOverFloor", c_int),
-                ("redHeightOverFloor", c_int),
-                ("redStimDist", c_int),
-                ("redInclAngle", c_int),
-                ("redStimDistHeigh", c_int),
-                ("redStimDistDepth", c_int)]
+    _fields_ = [('redGeometry', c_int),
+                ('monitorSize', c_int),
+                ('setupName', c_char * 256),
+                ('stimX', c_int),
+                ('stimY', c_int),
+                ('stimHeightOverFloor', c_int),
+                ('redHeightOverFloor', c_int),
+                ('redStimDist', c_int),
+                ('redInclAngle', c_int),
+                ('redStimDistHeigh', c_int),
+                ('redStimDistDepth', c_int)]
 
 #===========================
 #		Loading iViewX.dll 
@@ -151,7 +151,7 @@ else:
 #===========================
 
 systemData = CSystem(0, 0, 0, 0, 0, 0, 0, 0)
-calibrationData = CCalibration(5, 1, 0, 0, 1, 20, 239, 1, 15, b"")
+calibrationData = CCalibration(5, 1, 0, 0, 1, 20, 239, 1, 15, b'')
 leftEye = CEye(0,0,0)
 rightEye = CEye(0,0,0)
 sampleData = CSample(0,leftEye,rightEye,0)
@@ -164,6 +164,6 @@ leftEyePosition = CEyePosition(0, 0, 0, 0, 0, 0, 0)
 rightEyePosition = CEyePosition(0, 0, 0, 0, 0, 0, 0)
 binocularEyePosition = CEyePosition(0, 0, 0, 0, 0, 0, 0)
 trackingStatus = CTrackingStatus(0, leftEyePosition, rightEyePosition, binocularEyePosition)
-redGeometry = CREDGeometry(0, 0, b"", 0, 0, 0, 0, 0, 0, 0, 0)
+redGeometry = CREDGeometry(0, 0, b'', 0, 0, 0, 0, 0, 0, 0, 0)
 
 

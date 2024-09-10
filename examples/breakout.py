@@ -1,4 +1,4 @@
-"""
+'''
  Sample Breakout Game
  
  Adapted to PsychoPy from:
@@ -6,7 +6,7 @@
  Simpson College Computer Science
  http://programarcadegames.com/
  http://simpson.edu/computer-science/
-"""
+'''
  
 # --- Import libraries used for this program
  
@@ -124,12 +124,12 @@ def generate_blocks():
  
  
 class Block():
-    """This class represents each block that will get knocked out by the ball
-    """
+    '''This class represents each block that will get knocked out by the ball
+    '''
  
     def __init__(self, color, x, y):
-        """ Constructor. Pass in the color of the block,
-            and its x and y position. """
+        ''' Constructor. Pass in the color of the block,
+            and its x and y position. '''
 
         # Create the image of the block of appropriate size
         # The width and height are sent as a list for the first parameter.
@@ -143,8 +143,8 @@ class Block():
   
  
 class Ball():
-    """ This class represents the ball
-    """
+    ''' This class represents the ball
+    '''
  
     # Constructor. Pass in the color of the block, and its x and y position
     def __init__(self):
@@ -170,14 +170,14 @@ class Ball():
 #        
   
     def bounce(self, diff):
-        """ This function will bounce the ball
-            off a horizontal surface (not a vertical one) """
+        ''' This function will bounce the ball
+            off a horizontal surface (not a vertical one) '''
  
         self.direction = (180 - self.direction) % 360
         self.direction += diff
  
     def update(self):
-        """ Update the position of the ball. """
+        ''' Update the position of the ball. '''
         
         # Sine and Cosine work in degrees, so we have to convert them
         direction_radians = math.radians(self.direction)
@@ -210,11 +210,11 @@ class Ball():
             return False
  
 class Player():
-    """ This class represents the bar at the bottom that the
-    player controls. """
+    ''' This class represents the bar at the bottom that the
+    player controls. '''
  
     def __init__(self):
-        """ Constructor for Player. """
+        ''' Constructor for Player. '''
  
         self.width = 300
         self.height =15
@@ -228,7 +228,7 @@ class Player():
         
   
     def update(self):
-        """ Update the player position. """
+        ''' Update the player position. '''
         
         if eye_tracking:
             

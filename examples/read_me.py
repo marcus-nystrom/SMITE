@@ -92,7 +92,7 @@ tracker.start_recording()
 core.wait(0.1)
 
 # Flip an image onto the screen here
-tracker.set_begaze_trial_image("imname.png")
+tracker.set_begaze_trial_image('imname.png')
 core.wait(1)
 tracker.stop_recording()
 

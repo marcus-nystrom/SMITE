@@ -7,9 +7,9 @@ import numpy as np
 import SMITE_Dummy_raw
         
 class Connect(object):
-    """
+    '''
     Creates a class that simplifies life for people wanting to use the SDK
-    """
+    '''
     def __init__(self):
 
         self.rawSMI = SMITE_Dummy_raw.Connect()
@@ -86,9 +86,9 @@ class Connect(object):
     def stop_recording(self):
         self.rawSMI.stop_recording()
     #%% 
-    def save_data(self, filename, description = "", 
+    def save_data(self, filename, description = '', 
                    user = None, overwrite=0):
-        self.rawSMI.save_data(filename, description = "", 
+        self.rawSMI.save_data(filename, description = '', 
                    user = None, overwrite=0)        
     #%%
     def de_init(self):

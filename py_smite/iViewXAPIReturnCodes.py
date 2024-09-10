@@ -34,103 +34,103 @@ def HandleError(ret):
         return
     elif ret == 2:
         pass
-        #msg = "no new data available"
+        #msg = 'no new data available'
     elif ret == 3:
-        msg = "calibration or validation was aborted during progress"
+        msg = 'calibration or validation was aborted during progress'
     elif ret == 4:
-        msg = "server is running"
+        msg = 'server is running'
     elif ret == 5:
-        msg = "calibration is not in progress"
+        msg = 'calibration is not in progress'
     elif ret == 11:
-        msg = "window is open"        
+        msg = 'window is open'        
     elif ret == 12:
-        msg = "window is closed"        
+        msg = 'window is closed'        
     elif ret == 100:
-        msg = "failed to establish connection"        
+        msg = 'failed to establish connection'        
     elif ret == 101:
-        msg = "no connection established"
+        msg = 'no connection established'
     elif ret == 102:
-        msg = "system is not calibrated"
+        msg = 'system is not calibrated'
     elif ret == 103:
-        msg = "system is not validated"
+        msg = 'system is not validated'
     elif ret == 104:
-        msg = "no eye tracking application running"
+        msg = 'no eye tracking application running'
     elif ret == 105:
-        msg = "failed to establish connection"
+        msg = 'failed to establish connection'
     elif ret == 111:
-        msg = "no connection established"        
+        msg = 'no connection established'        
     elif ret == 112:
-        msg = "parameter out of range"
+        msg = 'parameter out of range'
     elif ret == 113:
-        msg = "eye tracking device required for this calibration method is not connected"
+        msg = 'eye tracking device required for this calibration method is not connected'
     elif ret == 114:
-        msg = "calibration timeout occurred"
+        msg = 'calibration timeout occurred'
     elif ret == 115:
-        msg = "eye tracking is not stable"
+        msg = 'eye tracking is not stable'
     elif ret == 116:
-        msg = "insufficient buffer size"
+        msg = 'insufficient buffer size'
     elif ret == 121:
-        msg = "cannot create socket"
+        msg = 'cannot create socket'
     elif ret == 122:
-        msg = "cannot connect with socket"        
+        msg = 'cannot connect with socket'        
     elif ret == 123:
-        msg = "the defined port is blocked"
+        msg = 'the defined port is blocked'
     elif ret == 124:
-        msg = "failed to delete sockets"
+        msg = 'failed to delete sockets'
     elif ret == 131:
-        msg = "iView X (eyetracking-server) application was not able to response to current request"
+        msg = 'iView X (eyetracking-server) application was not able to response to current request'
     elif ret == 132:
-        msg = "invalid version of iView X (eyetracking-server)"
+        msg = 'invalid version of iView X (eyetracking-server)'
     elif ret == 133:
-        msg = "wrong version of iView X (eyetracking-server) application"
+        msg = 'wrong version of iView X (eyetracking-server) application'
     elif ret == 171:
-        msg = "failed to access log file"
+        msg = 'failed to access log file'
     elif ret == 181:
-        msg = "socket connection failed"
+        msg = 'socket connection failed'
     elif ret == 201:
-        msg = "Could not establish connection. Check if Eye Tracker is installed and running."
+        msg = 'Could not establish connection. Check if Eye Tracker is installed and running.'
     elif ret == 191:
-        msg = "recording buffer is empty"
+        msg = 'recording buffer is empty'
     elif ret == 192:
-        msg = "recording is activated"
+        msg = 'recording is activated'
     elif ret == 193:
-        msg = "data buffer is full"
+        msg = 'data buffer is full'
     elif ret == 194:
-        msg = "iView X (eyetracking-server) application is not ready to record buffer"
+        msg = 'iView X (eyetracking-server) application is not ready to record buffer'
     elif ret == 195:
-        msg = "paused data buffer"
+        msg = 'paused data buffer'
     elif ret == 201:
-        msg = "iView X (eyetracking-server) application was not found"
+        msg = 'iView X (eyetracking-server) application was not found'
     elif ret == 202:
-        msg = "path for file does not exist"
+        msg = 'path for file does not exist'
     elif ret == 203:
-        msg = "access denied"
+        msg = 'access denied'
     elif ret == 204:
-        msg = "access incomplete"
+        msg = 'access incomplete'
     elif ret == 205:
-        msg = "out of memory"
+        msg = 'out of memory'
     elif ret == 211:
-        msg = "failed to access eye tracking device"
+        msg = 'failed to access eye tracking device'
     elif ret == 212:
-        msg = "failed to access eye tracking device"
+        msg = 'failed to access eye tracking device'
     elif ret == 213:
-        msg = "failed to access port connected to eye tracking device"
+        msg = 'failed to access port connected to eye tracking device'
     elif ret == 220:
-        msg = "failed to open port"
+        msg = 'failed to open port'
     elif ret == 221:
-        msg = "failed to close port"
+        msg = 'failed to close port'
     elif ret == 222:
-        msg = "failed to access AOI data"
+        msg = 'failed to access AOI data'
     elif ret == 223:
-        msg = "AOI not defined"
+        msg = 'AOI not defined'
     elif ret == 250:
-        msg = "failed to access requested feature"
+        msg = 'failed to access requested feature'
     elif ret == 300:
-        msg = "function is deprecated"
+        msg = 'function is deprecated'
     elif ret == 400:
-        msg = "function or dll not initialized"
+        msg = 'function or dll not initialized'
     else:
-        msg = "Unknown return Code " + str(ret)
+        msg = 'Unknown return Code ' + str(ret)
         
     if ret != 2:
         print(msg)

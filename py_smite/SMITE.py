@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-"""
+'''
 Created on Mon Feb 26 14:16:59 2018
 
 @author: Marcus
-"""
+'''
 
 from psychopy import core
 

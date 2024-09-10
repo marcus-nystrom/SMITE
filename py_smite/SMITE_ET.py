@@ -18,8 +18,8 @@ import SMITE_raw
 global buf
       
 class Connect(object):
-    """ Create a class that simplifies life for people wanting to use the SDK
-    """
+    ''' Create a class that simplifies life for people wanting to use the SDK
+    '''
     def __init__(self, in_arg):
         '''
         Args:
@@ -170,7 +170,7 @@ class Connect(object):
                 
                 # Write the calibration results to the idf file
                 self.start_recording()
-                self.send_message("Calibration results in degrees (LX, LY, RX, RY): {}".format([d for d in devs]))
+                self.send_message('Calibration results in degrees (LX, LY, RX, RY): {}'.format([d for d in devs]))
                 self.stop_recording()
                 
             else:
@@ -260,7 +260,7 @@ class Connect(object):
         
         
     #%% 
-    def save_data(self, filename, description = "", 
+    def save_data(self, filename, description = '', 
                    user = None, append_version=True):
         ''' Save idf file to specified location
         The data recording needs to be stopped using iV_StopRecording
@@ -330,7 +330,7 @@ class Connect(object):
             image_name - filename where recorded eye images will be saved
             path - path where the eye images are stored
             
-        Example: start_eye_image_recording('test',"c:\\eyeimages\\" )
+        Example: start_eye_image_recording('test','c:\\eyeimages\\' )
         '''
         self.rawSMI.start_eye_image_recording(image_name, path)
     #%%
@@ -571,7 +571,7 @@ class Connect(object):
     #%%        
     def _run_calibration(self, deviations, show_instructions=False,
                    select_best_calibration=False, optional=False):
-        """ Run the calibration
+        ''' Run the calibration
         
         Args: 
             deviations - list containing results from previous calibrations
@@ -580,7 +580,7 @@ class Connect(object):
                                         calibrations
             optional - is the calibration optional or required (allows you to 
                        skip the calibration if set to True).
-        """
+        '''
                 
         self.win.flip()
         self.instruction_text.pos = (0, 0)
@@ -1145,7 +1145,7 @@ class Connect(object):
 
 #%%   
 class AnimatedCalibrationDisplay(object):
-    """ A class for drawing animated targets"""
+    ''' A class for drawing animated targets'''
     def __init__(self, win, target, function_name):
         ''' The function 'function_name' does the actual drawing
         '''
