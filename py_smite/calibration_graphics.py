@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-"""
+'''
 Created on Thu Aug 30 10:19:10 2018
 
 @author: Marcus
-"""
+'''
 import numpy as np
 
 blue = tuple(np.array([37, 97, 163]) / 255.0 * 2 - 1)

@@ -39,9 +39,9 @@ class Eye:
 #%%    
         
 class Connect(Thread):
-    """
+    '''
     Basic functionally to communicate with and manage SMI eye trackers
-    """
+    '''
     def __init__(self):
         '''
         Constructs an instance of the SMITE interface, with specified settings. 
@@ -731,7 +731,7 @@ class Connect(Thread):
         print('save_calibration')        
         
     #%%             
-    def save_data(self, filename, description = "", 
+    def save_data(self, filename, description = '', 
                    user = None, overwrite=0):
         ''' Writes recorded data buffer to disc. 
         The data recording needs to be stopped using iV_StopRecording
@@ -762,8 +762,8 @@ class Connect(Thread):
             
         # Split filename into path and filename
         path, filename = os.path.split(filename)
-        assert(len(path) > 0), "Filename must have a path"
-        assert(len(filename) > 0), "Filename must be given"
+        assert(len(path) > 0), 'Filename must have a path'
+        assert(len(filename) > 0), 'Filename must be given'
 
         # Check if a '.idf was added to the filename. If so, remove it
         ext = os.path.splitext(filename)[1]
@@ -793,8 +793,8 @@ class Connect(Thread):
     #%%             
     def send_image_message(self, msg):
         ''' Sends a text message to iView X idf recording data file. 
-        If the etMessage has the suffix ".jpg", ".bmp",
-        ".png", or ".avi" BeGaze will separate the data buffer 
+        If the etMessage has the suffix '.jpg', '.bmp',
+        '.png', or '.avi' BeGaze will separate the data buffer 
         automatically into according trials.
         
         Supported systems: all 
@@ -922,7 +922,7 @@ class Connect(Thread):
         if self.set_sampling_freq_allowed:
             print('set_speed_mode')   
         else:
-            print("WARNING: set_speed_mode is not supported on this eye tracker")
+            print('WARNING: set_speed_mode is not supported on this eye tracker')
             
     #%%     
     def set_tracking_mode(self, mode):
@@ -954,7 +954,7 @@ class Connect(Thread):
             
             print('set_tracking_mode')  
         else:
-            print("WARNING: set_tracking_mode is not supported on this eye tracker")          
+            print('WARNING: set_tracking_mode is not supported on this eye tracker')          
             
     #%%
     def set_tracking_monitor_callback(self, function_name):
@@ -996,7 +996,7 @@ class Connect(Thread):
                                      target_size=20, 
                                      target_shape=2): 
                                                             
-        """
+        '''
         Sets the calibration and validation visualization parameter.
         
         Setup calibration parameters (but do not initiate calibration)
@@ -1016,7 +1016,7 @@ class Connect(Thread):
         Supported systems: all 
         
         
-        """
+        '''
         
         print('setup_calibration_parameters')     
         
@@ -1143,10 +1143,10 @@ class Connect(Thread):
  
     #%%             
     def set_cal_positions(self, cal_positions):
-        """
+        '''
         Sets the positions of the calibration locations
         cal_positions is a dict:  {1:[x,y],2:[x,y],....}
-        """
+        '''
         if cal_positions:
             for k in cal_positions.keys():
                 self.change_calibration_point(k, cal_positions[k][0], cal_positions[k][1])    
@@ -1167,7 +1167,7 @@ class Connect(Thread):
         ext = os.path.splitext(imname)[1]
         
         # check extention is one of the supported ones
-        assert(len([i for i in ['.png','.jpg','.jpeg','.bmp','.avi'] if ext == i]) > 0), "Filename not supported"
+        assert(len([i for i in ['.png','.jpg','.jpeg','.bmp','.avi'] if ext == i]) > 0), 'Filename not supported'
         self.send_image_message(imname)
         
     #%% 
@@ -1189,17 +1189,17 @@ class Connect(Thread):
     #%%     
     def start_eye_image_recording(self, image_name, path):
         ''' Starts eye image recording
-        Example: start_eye_image_recording('test',"c:\\eyeimages\\" )
+        Example: start_eye_image_recording('test','c:\\eyeimages\\' )
         '''
         
-        self.send_command(' '.join(["ET_EVB 1", image_name, path]))
+        self.send_command(' '.join(['ET_EVB 1', image_name, path]))
 
             
     #%%             
     def stop_eye_image_recording(self):
         ''' Stops eye image recording
         '''
-        self.send_command("ET_EVE")
+        self.send_command('ET_EVE')
                
      
     #%%
@@ -1240,7 +1240,7 @@ class Connect(Thread):
     def increment_trial_number(self):
         ''' Increments trial number in iview X buffer.
         '''
-        self.send_command("ET_INC")
+        self.send_command('ET_INC')
 
     
     #%%  

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-"""
+'''
 Created on Fri Nov 10 21:31:13 2017
 
 @author: marcus
-"""
+'''
 
 from psychopy import visual
 import numpy as np
@@ -222,26 +222,26 @@ def psychopy2smi(pos, mon, units='norm'):
 
 #%%         
 class RingBuffer(object):
-    """ A simple ring buffer based on the deque class
-    Used as online buffer of gaze samples"""
+    ''' A simple ring buffer based on the deque class
+    Used as online buffer of gaze samples'''
     def __init__(self, maxlen=200):        
         # Create que with maxlen 
         self.maxlen = maxlen
         self._b = deque(maxlen=maxlen)  
 
     def clear(self):
-        """ Clears buffer """
+        ''' Clears buffer '''
         return(self._b.clear())
         
     def get_all(self):
-        """ Returns all samples from buffer and empties the buffer"""
+        ''' Returns all samples from buffer and empties the buffer'''
         lenb = len(self._b)
         return([self._b.popleft() for i in range(lenb)])
         
     def peek(self):
-        """ Returns all samples from buffer without emptying the buffer
+        ''' Returns all samples from buffer without emptying the buffer
         First remove an element, then add it again
-        """
+        '''
         b_temp = copy.copy(self._b)
         c = []
         if len(b_temp) > 0:
@@ -252,4 +252,4 @@ class RingBuffer(object):
         
     def append(self, L):
         self._b.append(L)         
-        """"Append buffer with the most recent sample (list L)"""
+        '''Append buffer with the most recent sample (list L)'''

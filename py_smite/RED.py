@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+'''
 Created on Sat Jan 09 19:50:57 2016
 
 @author: marcus
@@ -8,7 +8,7 @@ Settings file for the RED250/500 eye tracker
 Here we list parameters that can be sent remotely to iView X to override default parameters
 OBS! PsychoPy geometric setup should match that entered in iView
 
-"""
+'''
 
 
 MY_MONITOR                  = 'default' # needs to exists in PsychoPy monitor center
@@ -28,7 +28,7 @@ average_data = False
 filtering = False # Use filters 
 
 #%% Files and filepaths
-temp_folder_path = r"C:\\ProgramData\SMI\iViewX\temp"
+temp_folder_path = r'C:\\ProgramData\SMI\iViewX\temp'
 delete_temp_idf_files = False
 
 eye_image_size = (80, 344)# Size of eye images in RED

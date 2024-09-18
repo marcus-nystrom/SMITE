@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-"""
+'''
 Created on Sat Jan 09 19:50:57 2016
 
 @author: marcus
 
 Settings file for the REDm Professional eye tracker
 
-"""
+'''
 
 MY_MONITOR = 'default'              # needs to exist in PsychoPy monitor center
 

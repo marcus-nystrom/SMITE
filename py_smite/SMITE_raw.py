@@ -28,8 +28,8 @@ tracking_mode_dict = {'SMART_BINOCULAR':0, 'MONOCULAR_LEFT':1,
 #%%    
         
 class Connect(object):
-    """ Basic functionally to communicate with and manage SMI eye trackers
-    """
+    ''' Basic functionally to communicate with and manage SMI eye trackers
+    '''
     def __init__(self, in_arg):
         '''
         Constructs an instance of the SMITE interface, with specified settings. 
@@ -1080,7 +1080,7 @@ class Connect(object):
         HandleError(res)      
         
     #%%             
-    def save_data(self, filename, description = "", 
+    def save_data(self, filename, description = '', 
                    user = None, append_version=True):
         ''' Writes recorded data buffer to disc. 
         The data recording needs to be stopped using iV_StopRecording
@@ -1109,8 +1109,8 @@ class Connect(object):
             
         # Split filename into path and filename
         path, filename = os.path.split(filename)
-        assert(len(path) > 0), "Filename must have a path"
-        assert(len(filename) > 0), "Filename must be given"
+        assert(len(path) > 0), 'Filename must have a path'
+        assert(len(filename) > 0), 'Filename must be given'
 
         # Check if a '.idf was added to the filename. If so, remove it
         ext = os.path.splitext(filename)[1]
@@ -1178,7 +1178,7 @@ class Connect(object):
         print(profile)
         res = iViewXAPI.iV_SelectREDGeometry(c_char_p(profile.encode('ascii')))
         HandleError(res)   
-        assert(res==1), "RED geometry profile does not exist"
+        assert(res==1), 'RED geometry profile does not exist'
         
         
     #%%
@@ -1194,8 +1194,8 @@ class Connect(object):
     #%%             
     def send_image_message(self, msg):
         ''' Sends a text message to iView X idf recording data file. 
-        If the etMessage has the suffix ".jpg", ".bmp",
-        ".png", or ".avi" BeGaze will separate the data buffer 
+        If the etMessage has the suffix '.jpg', '.bmp',
+        '.png', or '.avi' BeGaze will separate the data buffer 
         automatically into according trials.
         
         Supported systems: all 
@@ -1386,7 +1386,7 @@ class Connect(object):
             res = iViewXAPI.iV_SetSpeedMode(c_int(samplingrate))
             HandleError(res) 
         else:
-            print("WARNING: set_speed_mode is not supported on this eye tracker")
+            print('WARNING: set_speed_mode is not supported on this eye tracker')
             
     #%%     
     def set_tracking_mode(self, mode):
@@ -1419,7 +1419,7 @@ class Connect(object):
             res = iViewXAPI.iV_SetTrackingMode(tracking_mode_dict[mode])
             HandleError(res)
         else:
-            print("WARNING: set_tracking_mode is not supported on this eye tracker")          
+            print('WARNING: set_tracking_mode is not supported on this eye tracker')          
             
     #%%
     def set_tracking_monitor_callback(self, function_name):
@@ -1465,7 +1465,7 @@ class Connect(object):
                                      target_size=20, 
                                      target_shape=2): 
                                                             
-        """
+        '''
         Sets the calibration and validation visualization parameter.
         
         Setup calibration parameters (but do not initiate calibration)
@@ -1485,7 +1485,7 @@ class Connect(object):
         Supported systems: all 
         
         
-        """
+        '''
         
         calibrationData = CCalibration(cal_method,
                                        0, # Always use Psychopy for visualization
@@ -1496,7 +1496,7 @@ class Connect(object):
                                        bg_color,
                                        target_shape,
                                        target_size,
-                                       b"")
+                                       b'')
         res = iViewXAPI.iV_SetupCalibration(byref(calibrationData))
         print('CCdata {}'.format(res))
         HandleError(res)        
@@ -1636,10 +1636,10 @@ class Connect(object):
  
     #%%             
     def set_cal_positions(self, cal_positions):
-        """
+        '''
         Sets the positions of the calibration locations
         cal_positions is a dict:  {1:[x,y],2:[x,y],....}
-        """
+        '''
         if cal_positions:
             for k in cal_positions.keys():
                 self.change_calibration_point(k, cal_positions[k][0], cal_positions[k][1])    
@@ -1660,7 +1660,7 @@ class Connect(object):
         ext = os.path.splitext(imname)[1]
         
         # check extention is one of the supported ones
-        assert(len([i for i in ['.png','.jpg','.jpeg','.bmp','.avi'] if ext == i]) > 0), "Filename not supported"
+        assert(len([i for i in ['.png','.jpg','.jpeg','.bmp','.avi'] if ext == i]) > 0), 'Filename not supported'
         self.send_image_message(imname)
         
     #%% 
@@ -1682,24 +1682,24 @@ class Connect(object):
     #%%     
     def start_eye_image_recording(self, image_name, path):
         ''' Starts eye image recording
-        Example: start_eye_image_recording('test',"c:\\eyeimages\\" )
+        Example: start_eye_image_recording('test','c:\\eyeimages\\' )
         '''
         
-        self.send_command(' '.join(["ET_EVB 1", image_name, path]))
+        self.send_command(' '.join(['ET_EVB 1', image_name, path]))
 
             
     #%%             
     def stop_eye_image_recording(self):
         ''' Stops eye image recording
         '''
-        self.send_command("ET_EVE")
+        self.send_command('ET_EVE')
                
      
     #%%             
     def get_latest_sample(self):
         ''' Gets most recent gaze sample
         '''
-        #pickle.dump(self.get_sample(), open( "sample.p", "wb" ) )
+        #pickle.dump(self.get_sample(), open( 'sample.p', 'wb' ) )
         
         return self.get_sample()
         
@@ -1714,7 +1714,7 @@ class Connect(object):
     def increment_trial_number(self):
         ''' Increments trial number in iview X buffer.
         '''
-        self.send_command("ET_INC")
+        self.send_command('ET_INC')
 
     
     #%%  
