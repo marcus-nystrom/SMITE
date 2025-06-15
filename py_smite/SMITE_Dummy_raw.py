@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 # Load required packages 
-from psychopy import core, event, misc
-from iViewXAPI import*
-from iViewXAPIReturnCodes import* 
+from psychopy import core, event
+from .iViewXAPI import *
+from .iViewXAPIReturnCodes import *
 import subprocess
 import numpy as np
 import os
