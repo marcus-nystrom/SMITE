@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Load required packages 
-from psychopy import core, event, visual
+from psychopy import core, event, visual, tools
 from .iViewXAPI import *
 from .iViewXAPIReturnCodes import * 
 import numpy as np
@@ -133,8 +133,8 @@ class Connect(object):
             
             # Define your calibration target
             target = helpers.MyDot2(self.win, units='pix',
-                                     outer_diameter = win.size[0] * 0.02, 
-                                     inner_diameter = win.size[0] * 0.005)
+                                    outer_diameter=graphics.TARGET_SIZE, 
+                                    inner_diameter=graphics.TARGET_SIZE_INNER)
             self.animator = AnimatedCalibrationDisplay(self.win, target, 'animate_point')
         
         # Main control loop
@@ -372,7 +372,8 @@ class Connect(object):
         
         # Shown during setup to check gaze in corners
         self.POS_CAL_CHECK_DOTS = [[-0.45 * ratio, -0.45], [0.45 * ratio, -0.45], 
-                              [-0.45 * ratio, 0.45], [0.45 * ratio, 0.45]]
+                                   [-0.45 * ratio,  0.45], [0.45 * ratio,  0.45]]
+        self.POS_CAL_CHECK_DOTS = [tools.monitorunittools.convertToPix(np.array([0.,0.]),p,'height',win) for p in self.POS_CAL_CHECK_DOTS]
 
         # Text object to draw text (on buttons)
         #text_size = 0.04
@@ -381,8 +382,8 @@ class Connect(object):
         
         # Setup stimuli for drawing calibration / validation targets
         self.cal_dot = helpers.MyDot2(win, units='pix',
-                                     outer_diameter=graphics.TARGET_SIZE, 
-                                     inner_diameter=graphics.TARGET_SIZE_INNER)
+                                      outer_diameter=graphics.TARGET_SIZE, 
+                                      inner_diameter=graphics.TARGET_SIZE_INNER)
         
         # Click buttons
         self.calibrate_button = visual.Rect(win, width= graphics.WIDTH_CAL_BUTTON, 
@@ -434,9 +435,9 @@ class Connect(object):
                                                 pos=graphics.POS_GAZE_BUTTON)             
                                         
         # Dots for the setup screen
-        self.setup_dot = helpers.MyDot2(win, units='height',
-                                     outer_diameter=graphics.SETUP_DOT_OUTER_DIAMETER, 
-                                     inner_diameter=graphics.SETUP_DOT_INNER_DIAMETER)        
+        self.setup_dot = helpers.MyDot2(win, units='pix',
+                                        outer_diameter=graphics.SETUP_DOT_OUTER_DIAMETER, 
+                                        inner_diameter=graphics.SETUP_DOT_INNER_DIAMETER)        
         
         # Setup control circles for head position
         self.static_circ = visual.Circle(win, radius = graphics.HEAD_POS_CIRCLE_FIXED_RADIUS, 
