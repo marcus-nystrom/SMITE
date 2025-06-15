@@ -10,19 +10,18 @@ from psychopy import core
 def get_defaults(eye_tracker_name):
     ''' Returns default setting
     '''
-    print(eye_tracker_name)
     if eye_tracker_name == 'REDm':
-        import REDm as settings
+        from . import REDm as settings
     elif eye_tracker_name == 'HiSpeed':
-        import HiSpeed as settings
+        from . import HiSpeed as settings
     elif eye_tracker_name == 'RED':
-        import RED as settings
+        from . import RED as settings
     elif eye_tracker_name == 'REDn_Professional':
-        import REDn_Professional as settings
+        from . import REDn_Professional as settings
     elif eye_tracker_name == 'REDn_Scientific':
-        import REDn_Scientific as settings        
+        from . import REDn_Scientific as settings        
     elif eye_tracker_name == 'RED250mobile':
-        import RED250mobile as settings             
+        from . import RED250mobile as settings             
     else:
         print('Eye tracker not defined')
         core.quit()   
@@ -41,15 +40,15 @@ class Connect(object):
         
         if isinstance(in_arg, str):
             if 'dummy' in in_arg:
-                import SMITE_Dummy
+                from . import SMITE_Dummy
                 self.__class__ = SMITE_Dummy.Connect
                 self.__class__.__init__(self)  
             else:            
-                import SMITE_ET
+                from . import SMITE_ET
                 self.__class__ = SMITE_ET.Connect
                 self.__class__.__init__(self, in_arg)
         else:
-            import SMITE_ET
+            from . import SMITE_ET
             self.__class__ = SMITE_ET.Connect
             self.__class__.__init__(self, in_arg)
             
