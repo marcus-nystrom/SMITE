@@ -1,7 +1,7 @@
 # -----------------------------------------------------------------------
 #
 # (c) Copyright 1997-2016, SensoMotoric Instruments GmbH
-# 
+#
 # Permission  is  hereby granted,  free  of  charge,  to any  person  or
 # organization  obtaining  a  copy  of  the  software  and  accompanying
 # documentation  covered  by  this  license  (the  "Software")  to  use,
@@ -9,7 +9,7 @@
 # and  to  prepare derivative  works  of  the  Software, and  to  permit
 # third-parties to whom the Software  is furnished to do so, all subject
 # to the following:
-# 
+#
 # The  copyright notices  in  the Software  and  this entire  statement,
 # including the above license  grant, this restriction and the following
 # disclaimer, must be  included in all copies of  the Software, in whole
@@ -17,7 +17,7 @@
 # copies   or   derivative   works   are   solely   in   the   form   of
 # machine-executable  object   code  generated  by   a  source  language
 # processor.
-# 
+#
 # THE  SOFTWARE IS  PROVIDED  "AS  IS", WITHOUT  WARRANTY  OF ANY  KIND,
 # EXPRESS OR  IMPLIED, INCLUDING  BUT NOT LIMITED  TO THE  WARRANTIES OF
 # MERCHANTABILITY,   FITNESS  FOR  A   PARTICULAR  PURPOSE,   TITLE  AND
@@ -30,10 +30,10 @@
 # -----------------------------------------------------------------------
 # iViewXAPI.py
 #
-# Demonstrates features of iView API 
-# Defines structures 
+# Demonstrates features of iView API
+# Defines structures
 # Loads iViewXAPI.dll / iViewXAPI64.dll
-# This script shows how to set up an experiment with Python 2.7.1 (with ctypes Library) 
+# This script shows how to set up an experiment with Python 2.7.1 (with ctypes Library)
 
 
 from ctypes import *
@@ -94,25 +94,25 @@ class CAccuracy(Structure):
 				('deviationLY',c_double),
 				('deviationRX',c_double),
 				('deviationRY',c_double)]
-    
+
 class CImage(Structure):
 	_fields_ = [('imageHeight',c_int),
 				('imageWidth',c_int),
 				('imageSize',c_int),
 				('imageBuffer', POINTER(c_char))]
-				
-    
+
+
 class CCalibrationPoint(Structure):
     _fields_ = [('number',c_int),
                 ('positionX',c_int),
                 ('positionY',c_int)]
-                
+
 class CEyePosition(Structure):
     _fields_ = [('validity',c_int),
-                ('relativePositionX',c_double),  
+                ('relativePositionX',c_double),
                 ('relativePositionY',c_double),
                 ('relativePositionZ',c_double),
-                ('positionRatingX',c_double),  
+                ('positionRatingX',c_double),
                 ('positionRatingY',c_double),
                 ('positionRatingZ',c_double)]
 
@@ -136,15 +136,18 @@ class CREDGeometry(Structure):
                 ('redStimDistDepth', c_int)]
 
 #===========================
-#		Loading iViewX.dll 
+#		Loading iViewX.dll
 #===========================
 
+# ctypes.util.find_library() searches, among other things, PATH.
 if platform.architecture()[0] == '64bit':
-        iViewXAPI = windll.LoadLibrary("iViewXAPI64.dll")
+        dllPath = util.find_library('iViewXAPI64')
+        iViewXAPI = windll.LoadLibrary(dllPath)
 else:
-        iViewXAPI = windll.LoadLibrary("iViewXAPI.dll")
-        
-        
+        dllPath = util.find_library('iViewXAPI')
+        iViewXAPI = windll.LoadLibrary(dllPath)
+
+
 
 #===========================
 #		Initializing Structs
@@ -165,5 +168,3 @@ rightEyePosition = CEyePosition(0, 0, 0, 0, 0, 0, 0)
 binocularEyePosition = CEyePosition(0, 0, 0, 0, 0, 0, 0)
 trackingStatus = CTrackingStatus(0, leftEyePosition, rightEyePosition, binocularEyePosition)
 redGeometry = CREDGeometry(0, 0, b'', 0, 0, 0, 0, 0, 0, 0, 0)
-
-
