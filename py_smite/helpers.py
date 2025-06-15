@@ -15,22 +15,22 @@ import sys
 if sys.version_info[0] == 3:
     xrange = range
 
-#%% Toggle button
+#%%
 class MyDot2:
     '''
     Generates the best fixation target according to Thaler et al. (2013)
     '''
-    def __init__(self, win, outer_diameter=0.5, inner_diameter=0.1,
-                 outer_color = 'white', inner_color = 'black',units = 'pix'):
+    def __init__(self, win, outer_diameter=50, inner_diameter=10,
+                 outer_color = 'black', inner_color = 'white',units = 'pix'):
         '''
         Class to generate a stimulus dot with
         units are derived from the window
         '''
 
         # Set propertis of dot
-        outer_dot = visual.Circle(win,fillColor = outer_color, radius = outer_diameter/2.0,
+        outer_dot = visual.Circle(win,fillColor = outer_color, radius = outer_diameter/2,
                                   units = units)
-        inner_dot = visual.Circle(win,fillColor = outer_color, radius = inner_diameter/2.0,
+        inner_dot = visual.Circle(win,fillColor = outer_color, radius = inner_diameter/2,
                                   units = units)
         line_vertical = visual.Rect(win, width=inner_diameter, height=outer_diameter,
                                     fillColor=inner_color, units = units)
@@ -44,16 +44,19 @@ class MyDot2:
         self.line_horizontal = line_horizontal
 
 
-    def setSize(self, size):
-        self.outer_dot.size = size
-        self.line_vertical.size = size
-        self.line_horizontal.size = size
+    def set_size(self, size):
+        ''' Sets the size of the stimulus.
+        '''
+        self.outer_dot.radius = size / 2
+        self.line_vertical.size = (self.line_vertical.width, size)
+        self.line_horizontal.size = (size, self.line_horizontal.height)
 
-    def setPos(self,pos):
+    def set_pos(self, pos):
         '''
         sets position of dot
         pos = [x,y]
         '''
+        pos = [float(x) for x in pos]
         self.outer_dot.pos = pos
         self.inner_dot.pos = pos
         self.line_vertical.pos = pos
@@ -67,6 +70,13 @@ class MyDot2:
 
         return pos
 
+    def get_size(self):
+        '''
+        get size of dot
+        '''
+
+        return self.outer_dot.radius * 2
+
 
     def draw(self):
         '''
@@ -77,7 +87,6 @@ class MyDot2:
         self.line_horizontal.draw()
         self.inner_dot.draw()
 
-
     def invert_color(self):
         '''
         inverts the colors of the dot
@@ -86,67 +95,16 @@ class MyDot2:
         self.outer_dot.fillColor = self.inner_dot.fillColor
         self.inner_dot.fillColor = temp
 
-    def set_color(self, color):
-        self.outer_dot.lineColor = 'blue'
-        self.outer_dot.fillColor = 'blue'
-        self.inner_dot.fillColor = 'blue'
-        self.inner_dot.lineColor = 'blue'
-        self.line_vertical.lineColor = 'red'
-        self.line_horizontal.fillColor = 'red'
-        self.line_vertical.fillColor = 'red'
-        self.line_horizontal.lineColor = 'red'
-
-
-#%%
-class MyDot:
-    '''
-    Generates a fancy looking dot
-    '''
-    def __init__(self, win,outer_diameter=0.5, inner_diameter=0.1,
-                 outer_color = 'white', inner_color = 'black',
-                 units = 'pix'):
-        '''
-        Class to generate a stimulus dot with
-        units are derived from the window
-        '''
-
-        # Set propertis of dot
-        outer_dot = visual.Circle(win,fillColor = outer_color, radius = outer_diameter/2.0, units=units)
-        inner_dot = visual.Circle(win,fillColor = inner_color, radius = inner_diameter/2.0, units=units)
-
-
-        self.outer_dot = outer_dot
-        self.inner_dot = inner_dot
-
-
-    def setSize(self, size):
-        self.outer_dot.size = size
-        #self.inner_dot.radius = size
-
-    def setPos(self,pos):
-        '''
-        sets position of dot
-        pos = [x,y]
-        '''
-        self.outer_dot.pos = pos
-        self.inner_dot.pos = pos
-
-
-    def draw(self):
-        '''
-        draws the dot
-        '''
-        self.outer_dot.draw()
-        self.inner_dot.draw()
-
-    def invert_color(self):
-        '''
-        inverts the colors of the dot
-        '''
-        temp = self.outer_dot.fillColor
-        self.outer_dot.fillColor = self.inner_dot.fillColor
-        self.inner_dot.fillColor = temp
-
+    def set_color(self, outer_color, inner_color):
+        self.outer_dot.lineColor = outer_color
+        self.outer_dot.fillColor = outer_color
+        self.inner_dot.fillColor = outer_color
+        self.inner_dot.lineColor = outer_color
+        self.line_vertical.lineColor = inner_color
+        self.line_horizontal.fillColor = inner_color
+        self.line_vertical.fillColor = inner_color
+        self.line_horizontal.lineColor = inner_color
+        
 def pixels2degrees(pixels,viewing_dist = 0.70,screen_res = [1280,1024],
                    screen_size = [0.38,0.30],dim = 'h',center_coordinate_system = False):
     '''
@@ -235,12 +193,12 @@ class RingBuffer(object):
 
     def clear(self):
         ''' Clears buffer '''
-        return(self._b.clear())
+        return self._b.clear()
 
     def get_all(self):
         ''' Returns all samples from buffer and empties the buffer'''
         lenb = len(self._b)
-        return([self._b.popleft() for i in range(lenb)])
+        return list([self._b.popleft() for i in range(lenb)])
 
     def peek(self):
         ''' Returns all samples from buffer without emptying the buffer
@@ -252,8 +210,22 @@ class RingBuffer(object):
             for i in xrange(len(b_temp)):
                 c.append(b_temp.pop())
 
-        return(c)
+        return c
 
+    def peek_time_range(self, t0, t1):
+        ''' Returns all samples from buffer without emptying the buffer
+        First remove an element, then add it again
+        '''
+        b_temp = copy.copy(self._b)
+        c = []
+        if len(b_temp) > 0:
+            for i in range(len(b_temp)):
+                sample = b_temp.pop()
+                if (sample.timestamp >= t0) and (sample.timestamp <= t1):
+                    c.append(sample)
+
+        return c
+        
     def append(self, L):
         self._b.append(L)         
         '''Append buffer with the most recent sample (list L)'''
