@@ -2,16 +2,16 @@
 # -*- coding: utf-8 -*-
 
 # Load required packages 
-from psychopy import core, event, misc
-from iViewXAPI import*
-from iViewXAPIReturnCodes import* 
+from psychopy import core
+from .iViewXAPI import *
+from .iViewXAPIReturnCodes import * 
 import subprocess
 import numpy as np
-import helpers
+from . import helpers
 import glob
 import os
-from scipy import misc
 from ctypes import *
+from PIL import Image
 
 global buf # Used to keep data in ring buffer
 
@@ -55,21 +55,21 @@ class Connect(object):
             eye_tracker_name = constants.eye_tracker_name
             
         if eye_tracker_name == 'REDm':
-            import REDm as constants
+            from . import REDm as constants
             self.et_server_name = 'iViewXOEM'
             self.set_tracking_mode_allowed = True
             self.geom_profile = True
         elif eye_tracker_name == 'HiSpeed':
-            import HiSpeed as constants
+            from . import HiSpeed as constants
             self.enable_processor_high_performance_mode = False
             self.et_server_name = 'iViewX'
             self.set_binocular_allowed = False
             self.enable_processor_high_performance = False
         elif eye_tracker_name == 'RED':
-            import RED as constants
+            from . import RED as constants
             self.et_server_name = 'iViewX'
         elif eye_tracker_name == 'REDn':
-            import REDn as constants
+            from . import REDn as constants
             self.et_server_name = 'iViewNG'
             self.set_tracking_mode_allowed = True
             self.geom_profile = True
@@ -77,15 +77,15 @@ class Connect(object):
             self.et_server_name = 'iViewNG'
             self.set_tracking_mode_allowed = True
             self.geom_profile = True            
-            import REDn_Professional as constants
+            from . import REDn_Professional as constants
         elif eye_tracker_name == 'REDn_Scientific':
             self.et_server_name = 'iViewNG'
-            import REDn_Scientific as constants  
+            from . import REDn_Scientific as constants  
             self.set_tracking_mode_allowed = True
             self.geom_profile = True            
         elif eye_tracker_name == 'RED250mobile':
             self.et_server_name = 'iViewNG'
-            import RED250mobile as constants  
+            from . import RED250mobile as constants  
             self.set_tracking_mode_allowed = True
             self.geom_profile = True
         else:
@@ -523,21 +523,27 @@ class Connect(object):
         # update imageData with the most recent accuracy image        
         res = iViewXAPI.iV_GetAccuracyImage(byref(imageData))
         
-        # Convert imageData.imageBuffer to something understandable
-        ac = np.array(imageData.imageBuffer[:imageData.imageSize], 'c')
-        ac_as_int = ac.view(np.uint8)
-        ac_as_int = ac_as_int[:imageData.imageSize]
-        
-        # Make background gray instead of black
-        ac_as_int[ac_as_int == 0] = 128
-        im = np.reshape(ac_as_int, [imageData.imageHeight, imageData.imageWidth, 3]) 
-        
-        # Save image to disk if a file name is given
-        if fname:
-            misc.imsave(fname, im)
-            core.wait(0.1)
+        # Convert image to 1-d array: list() on array of bytes turns them to int
+        ac = np.array(list(imageData.imageBuffer[:imageData.imageSize])).astype('uint8')
+
+        # ValueError: total size of new array must be unchanged
+        if len(ac) == imageData.imageHeight * imageData.imageWidth * 3:
+            im = np.reshape(ac, [imageData.imageHeight, imageData.imageWidth, 3])
+            im = im[:, :, ::-1] # BGR -> RGB
+            im = np.fliplr(im)
             
-        return im
+            # Save image to disk if a file name is given
+            if fname:
+                image = Image.fromarray(im)
+                image.save(fname)
+                
+            im = (im / 255. * 2) - 1.
+        else:
+            im = np.zeros((self.constants.eye_image_size[0], self.constants.eye_image_size[1], 3))
+            res = 2
+        
+            
+        return im, res
         
     #%% 
     def get_aoi_output_value(self):
@@ -652,10 +658,11 @@ class Connect(object):
         ''' Provides the current eye tracker timestamp in microseconds
         Supported systems: all
         '''        
+        currentTimestamp = c_longlong()
         res = iViewXAPI.iV_GetCurrentTimestamp(byref(currentTimestamp))
         HandleError(res)
                     
-        return currentTimestamp  
+        return currentTimestamp.value
     
     #%%
     def get_device_name(self):
@@ -682,24 +689,16 @@ class Connect(object):
         ''' Updates imageData with current eye image (format: monochrome 8bpp).
         Supported systems: ToDo
         '''   
-        res = iViewXAPI.iV_GetEyeImage(byref(imageData)) 
-        #core.wait(0.)
+        res = iViewXAPI.iV_GetEyeImage(byref(imageData))
         if res == 1:
-            
-            # Convert image to 1-d array
-            ac = np.array(imageData.imageBuffer[:imageData.imageSize], 'c')
-            ac_as_int = ac.view(np.uint8)
-            ac_as_int = ac_as_int[:imageData.imageSize]
+            # Convert image to 1-d array: list() on array of bytes turns them to int
+            ac = np.array(list(imageData.imageBuffer[:imageData.imageSize])).astype('uint8')
             
             # Reshape to 2-d image and normalize values to [-1, 1]
             im = np.zeros(imageData.imageSize)
-            im[:np.shape(ac_as_int)[0]] = ac_as_int
+            im[:np.shape(ac)[0]] = ac
             im = np.reshape(im, [imageData.imageHeight, imageData.imageWidth])
-            
-            #np.save('eye_im', im)
-            
-            im = np.fliplr((im / float(im.max()) * 2) - 1)
-            #print(imageData.imageHeight, imageData.imageWidth, 3)
+            im = np.fliplr((im / 255 * 2) - 1)
 
             im_res = [imageData.imageHeight, imageData.imageWidth]
             
@@ -711,14 +710,12 @@ class Connect(object):
 
             
         # Fit image to a 512x512 container (must be power of 2)
-        # 
         if self.constants.eye_tracker_name == 'HiSpeed':
             im_sz = 1024
         else:
             im_sz = 512
             
         # Scale the eye image
-        #print(imageData.imageHeight, imageData.imageWidth, np.shape(im))
         im_final = np.zeros([im_sz, im_sz])
         row_idx = (im_sz - im_res[0]) / 2
         col_idx = (im_sz - im_res[1]) / 2
@@ -849,8 +846,6 @@ class Connect(object):
         'iV_MajorVersion':systemData.iV_MajorVersion,
         'iV_MinorVersion':systemData.iV_MajorVersion,
         'samplerate':systemData.samplerate}
-        print('hej')
-        print(systemData.iV_ETDevice)
         return system_info  
     
     #%%     
@@ -877,19 +872,14 @@ class Connect(object):
         # update imageData with the most recent accuracy image        
         res = iViewXAPI.iV_GetTrackingMonitor(byref(imageData))
         
-        # Convert imageData.imageBuffer to something understandable
-        ac = np.array(imageData.imageBuffer[:imageData.imageSize], 'c')
-        ac_as_int = ac.view(np.uint8)
-        ac_as_int = ac_as_int[:imageData.imageSize]
-        #print(imageData.imageHeight, imageData.imageWidth)
+        # Convert image to 1-d array: list() on array of bytes turns them to int
+        ac = np.array(list(imageData.imageBuffer[:imageData.imageSize])).astype('uint8')
         
         # ValueError: total size of new array must be unchanged
-        if len(ac_as_int) == imageData.imageHeight * imageData.imageWidth * 3:
-            im = np.reshape(ac_as_int, [imageData.imageHeight, imageData.imageWidth, 3])
-            im = (im / float(im.max()) * 2) - 1
-            im = im[:, :, ::-1]
-            im[im < 0] = 0
-            im[0, 0, 0] = -1
+        if len(ac) == imageData.imageHeight * imageData.imageWidth * 3:
+            im = np.reshape(ac, [imageData.imageHeight, imageData.imageWidth, 3])
+            im = (im / 255. * 2) - 1.
+            im = im[:, :, ::-1] # BGR -> RGB
             im = np.fliplr(im)
         else:
             im = np.zeros((self.constants.eye_image_size[0], self.constants.eye_image_size[1], 3))
@@ -1498,7 +1488,6 @@ class Connect(object):
                                        target_size,
                                        b'')
         res = iViewXAPI.iV_SetupCalibration(byref(calibrationData))
-        print('CCdata {}'.format(res))
         HandleError(res)        
         
     #%%
@@ -1738,6 +1727,11 @@ class Connect(object):
         '''
         return buf.peek()
         
+    def peek_buffer_data_time_range(self, t0, t1):
+        ''' Get data from the online buffer for a certain time range. The returned
+        samples remain in the buffer
+        '''
+        return buf.peek_time_range(t0, t1)
         
     def clear_buffer_data(self):
         ''' Clears buffer. 

@@ -2,17 +2,15 @@
 # -*- coding: utf-8 -*-
 
 # Load required packages 
-from psychopy import core, event, visual
-from iViewXAPI import*
-from iViewXAPIReturnCodes import* 
+from psychopy import core, event, visual, tools
+from .iViewXAPI import *
+from .iViewXAPIReturnCodes import * 
 import numpy as np
 import datetime
-from collections import deque
-from scipy import misc
-import calibration_graphics as graphics
-import helpers
+from . import calibration_graphics as graphics
+from . import helpers
 from ctypes import *
-import SMITE_raw
+from . import SMITE_raw
 
 
 global buf
@@ -134,9 +132,9 @@ class Connect(object):
         if self.constants.animate_calibration:
             
             # Define your calibration target
-            target = helpers.MyDot(self.win, units='pix',
-                                     outer_diameter = win.size[0] * 0.02, 
-                                     inner_diameter = win.size[0] * 0.005)
+            target = helpers.MyDot2(self.win, units='pix',
+                                    outer_diameter=graphics.TARGET_SIZE, 
+                                    inner_diameter=graphics.TARGET_SIZE_INNER)
             self.animator = AnimatedCalibrationDisplay(self.win, target, 'animate_point')
         
         # Main control loop
@@ -242,7 +240,18 @@ class Connect(object):
             data - list of samples (see get_latest_sample)        
         '''
         data = self.rawSMI.peek_buffer_data()
-        return data    
+        return data   
+    
+    #%%
+    def peek_buffer_data_time_range(self, t0, t1):
+        ''' Get data from the online buffer for a certain time range. The returned
+        samples remain in the buffer
+        
+        Returns:
+            data - list of samples (see get_latest_sample)        
+        '''
+        data = self.rawSMI.peek_buffer_data_time_range(t0, t1)
+        return data
     
     #%% 
     def stop_buffer(self, clear_buffer=False):
@@ -344,7 +353,7 @@ class Connect(object):
         ''' Enable dummy mode, which allows running the program without an 
         eye tracker connected
         '''
-        import SMITE_Dummy, SMITE_Dummy_raw
+        from . import SMITE_Dummy, SMITE_Dummy_raw
         self.__class__ = SMITE_Dummy.Connect
         self.__class__.__init__(self)    
         self.rawSMI = SMITE_Dummy_raw.Connect()
@@ -363,7 +372,8 @@ class Connect(object):
         
         # Shown during setup to check gaze in corners
         self.POS_CAL_CHECK_DOTS = [[-0.45 * ratio, -0.45], [0.45 * ratio, -0.45], 
-                              [-0.45 * ratio, 0.45], [0.45 * ratio, 0.45]]
+                                   [-0.45 * ratio,  0.45], [0.45 * ratio,  0.45]]
+        self.POS_CAL_CHECK_DOTS = [tools.monitorunittools.convertToPix(np.array([0.,0.]),p,'height',win) for p in self.POS_CAL_CHECK_DOTS]
 
         # Text object to draw text (on buttons)
         #text_size = 0.04
@@ -372,8 +382,8 @@ class Connect(object):
         
         # Setup stimuli for drawing calibration / validation targets
         self.cal_dot = helpers.MyDot2(win, units='pix',
-                                     outer_diameter=graphics.TARGET_SIZE, 
-                                     inner_diameter=graphics.TARGET_SIZE_INNER)
+                                      outer_diameter=graphics.TARGET_SIZE, 
+                                      inner_diameter=graphics.TARGET_SIZE_INNER)
         
         # Click buttons
         self.calibrate_button = visual.Rect(win, width= graphics.WIDTH_CAL_BUTTON, 
@@ -425,17 +435,23 @@ class Connect(object):
                                                 pos=graphics.POS_GAZE_BUTTON)             
                                         
         # Dots for the setup screen
-        self.setup_dot = helpers.MyDot(win, units='height',
-                                     outer_diameter=graphics.SETUP_DOT_OUTER_DIAMETER, 
-                                     inner_diameter=graphics.SETUP_DOT_INNER_DIAMETER)        
+        self.setup_dot = helpers.MyDot2(win, units='pix',
+                                        outer_diameter=graphics.SETUP_DOT_OUTER_DIAMETER, 
+                                        inner_diameter=graphics.SETUP_DOT_INNER_DIAMETER)        
         
         # Setup control circles for head position
         self.static_circ = visual.Circle(win, radius = graphics.HEAD_POS_CIRCLE_FIXED_RADIUS, 
                                          lineColor = graphics.HEAD_POS_CIRCLE_FIXED_COLOR,
+                                         fillColor = None,
                                          lineWidth=4, units='height')
-        self.moving_circ = visual.Circle(win, radius = graphics.HEAD_POS_CIRCLE_MOVING_RADIUS, 
+        self.moving_circ = visual.Circle(win, radius = graphics.HEAD_POS_CIRCLE_MOVING_RADIUS,
+                                         lineColor = None,
+                                         fillColor = graphics.HEAD_POS_CIRCLE_MOVING_COLOR,
+                                         opacity = 0.5, units='height')
+        self.moving_circ_line = visual.Circle(win, radius = graphics.HEAD_POS_CIRCLE_MOVING_RADIUS,
                                          lineColor = graphics.HEAD_POS_CIRCLE_MOVING_COLOR,
-                                         lineWidth=4, units='height')        
+                                         fillColor = None,
+                                         lineWidth=4, units='height')
                                          
         # Dot for showing et data
         self.et_sample_l = visual.Circle(win, radius = graphics.ET_SAMPLE_RADIUS, 
@@ -474,7 +490,7 @@ class Connect(object):
             
             # Draw four dots in the corners
             for i in self.POS_CAL_CHECK_DOTS:
-                self.setup_dot.setPos(i)
+                self.setup_dot.set_pos(i)
                 self.setup_dot.draw()
 
             # Draw buttons, one to calibrate, and one to 
@@ -522,10 +538,14 @@ class Connect(object):
                     
                 if self.moving_circ.radius > 0.3:
                     self.moving_circ.radius = 0.3
+
+                self.moving_circ_line.pos = self.moving_circ.pos
+                self.moving_circ_line.radius = self.moving_circ.radius
     
                 # Draw circles
-                self.moving_circ.draw()
                 self.static_circ.draw()
+                self.moving_circ.draw()
+                self.moving_circ_line.draw()
                             
                 # Draw instruction
                 self.instruction_text.pos = (0, 0.8)
@@ -692,7 +712,7 @@ class Connect(object):
             
             # Draw four dots in the corners
             for i in self.POS_CAL_CHECK_DOTS:
-                self.setup_dot.setPos(i)
+                self.setup_dot.set_pos(i)
                 self.setup_dot.draw()               
             
             # Check for keypress or mouse click to toggle visibility of pupil and CR corsshairs
@@ -789,14 +809,17 @@ class Connect(object):
         # get (and save) validation screen image
         nCalibrations = len(deviations)
         fname = str(nCalibrations)+'.jpg'
-        im = self.rawSMI.get_accuracy_image(fname) 
+        im, res = self.rawSMI.get_accuracy_image(fname) 
         
         # Save calibration 
         self.rawSMI.save_calibration(str(nCalibrations))
         core.wait(0.2)
         
         # Add image as texture
-        self.accuracy_image.image = fname
+        # # first replace black with background color. doesn't seem to work, so, commented out
+        # indices_list = np.where(np.all(im==[-1,-1,-1], axis=-1))
+        # im[indices_list] = [0.,0.,0.]
+        self.accuracy_image.image = im
         
         # information about data quality header
         header = ['Accuracy', 'LX', 'LY', 'RX', 'RY']
@@ -957,7 +980,7 @@ class Connect(object):
             # Display gaze along with four dots in the corners
             if display_gaze:
                 for i in self.POS_CAL_CHECK_DOTS:
-                    self.setup_dot.setPos(i)
+                    self.setup_dot.set_pos(i)
                     self.setup_dot.draw()
                 self._draw_gaze()
         
@@ -1049,7 +1072,7 @@ class Connect(object):
                     else:
                         self.animator.animate_target(p, (xy[:, 0], xy[:, 1]), tick)
                 else:
-                    self.cal_dot.setPos(xy)
+                    self.cal_dot.set_pos(xy)
                     self.cal_dot.draw()
                 
                 self.win.flip()
@@ -1152,6 +1175,7 @@ class AnimatedCalibrationDisplay(object):
         self.win = win
         self.function_name = function_name
         self.target = target # psychopy.visual object (should be in 'pix' units)
+        self.target_size = target.get_size()
         self.screen_refresh_rate = float(win.getActualFrameRate())
         
     def animate_target(self, point_number, position, tick):
@@ -1170,9 +1194,9 @@ class AnimatedCalibrationDisplay(object):
             position - (x, y)
         '''
         
-        target_size = np.abs(1 - np.sin(3 * tick / self.screen_refresh_rate + 3*np.pi/2)) + 0.2
-        self.target.setSize(target_size)
-        self.target.setPos(position)
+        target_size = np.abs(self.target_size - self.target_size * np.sin(3 * tick / self.screen_refresh_rate + 4*np.pi/2)) + self.target_size / 5
+        self.target.set_size(target_size)
+        self.target.set_pos(position)
         self.target.draw()
         
     def move_point(self, old_position, new_position, tick):
@@ -1181,17 +1205,17 @@ class AnimatedCalibrationDisplay(object):
         move_completed = False
         
         # The target should have a fixed size when moving
-        self.target.setSize(2)
+        self.target.set_size(2 * self.target_size)
         
         # How many ticks should the movement be (one screen unit in one second)?
-        n_steps = self.screen_refresh_rate / 2
+        n_steps = int(self.screen_refresh_rate / 2)
         step_pos_x = np.linspace(old_position[0], new_position[0], n_steps)
         step_pos_y = np.linspace(old_position[1], new_position[1], n_steps)
         
         if tick >= len(step_pos_x):
             move_completed = True
         else:       
-            self.target.setPos((step_pos_x[tick], step_pos_y[tick]))
+            self.target.set_pos([step_pos_x[tick], step_pos_y[tick]])
             
         self.target.draw()
         

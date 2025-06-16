@@ -46,4 +46,5 @@ Thumbs.db
 
 # Other files #
 ######################
-
+.spyproject/*
+*.egg-info

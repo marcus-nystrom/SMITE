@@ -12,14 +12,14 @@ green = tuple(np.array([0, 120, 0]) / 255.0 * 2 - 1)
 red = tuple(np.array([150, 0, 0]) / 255.0 * 2 - 1)
 yellow = tuple(np.array([150, 150, 0]) / 255.0 * 2 - 1)
 
-ET_SAMPLE_RADIUS = 10 # Pixles
+ET_SAMPLE_RADIUS = 10 # Pixels
 
 # Size of text
 TEXT_SIZE = 0.04
 
-# SIze of calibration dots
-TARGET_SIZE=20  # in pixles
-TARGET_SIZE_INNER=TARGET_SIZE / float(5)  # inner diameter of dot
+# Size of calibration dots
+TARGET_SIZE = 20  # in pixels
+TARGET_SIZE_INNER=TARGET_SIZE / 5.  # diameter of inner dot
 
 HEAD_POS_CIRCLE_FIXED_COLOR = blue
 HEAD_POS_CIRCLE_FIXED_RADIUS = 0.15
@@ -70,9 +70,8 @@ HEIGHT_GAZE_BUTTON = 0.08
 GAZE_BUTTON = 'g'
 GAZE_BUTTON_TEXT = 'show gaze (g)'
 
-SETUP_DOT_OUTER_DIAMETER = 0.05 # Height unit
-SETUP_DOT_INNER_DIAMETER = 0.02        
+SETUP_DOT_OUTER_DIAMETER = 20  # in pixels
+SETUP_DOT_INNER_DIAMETER = SETUP_DOT_OUTER_DIAMETER / 5.    # diameter of inner dot
 
-#EYE_IMAGE_SIZE = (640, 512)
 EYE_IMAGE_SIZE = (512, 512)
 

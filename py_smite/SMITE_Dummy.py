@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 # Load required packages 
-from psychopy import core, event, misc, visual
+from psychopy import core, event, visual
 import numpy as np
-import SMITE_Dummy_raw
+from . import SMITE_Dummy_raw
         
 class Connect(object):
     '''
